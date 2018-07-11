@@ -5,50 +5,84 @@
 
 - download node and npm
 - install the react boiler plate CLI
-```sh
-npm i -g create-react-app
-```
+    ```sh
+    npm i -g create-react-app
+    ```
 - create your add
-```sh
-create-react-app <app-name>
-```
+    ```sh
+    create-react-app <app-name>
+    ```
 - run the app for the first time.
-```sh
-cd <app-name>
-yarn start
-```
+    ```sh
+    cd <app-name>
+    yarn start
+    ```
 
-
+## step 0.5
+- in order to make the ui more friendly and neat i will use a third party css package call `bootstrap`
+- add `bootstrap` to your application by run:
+    ```sh
+    yarn add bootstrap
+    ```
+- on the `App.js` add the `bootstrap` css like so:
+    ```jsx
+    import 'bootstrap/dist/css/bootstrap.min.css';
+    ```
 ## step 1
 ### create your first component
 
-- under `src` create new folder, components.
-- in this folder create two new files:
-```jsx
-/* User.js */
-import React from 'react'
-import PropTypes from 'prop-types';
-export default class User extends React.Component {
-    render() {
-        return (
-            <div className="user-item">
-                <div>
-                    id:1
+- under `src` create new folder, `components`.
+- in this folder create  User.js file:
+    ```jsx
+    /* User.js */
+    import React from 'react'
+    export default class User extends React.Component {
+        render() {
+            return (
+                <div className="user-item">
+                    <div>
+                        id:1
+                    </div>
+                    <div>
+                        username:johndoe
+                    </div>
+                    <div>
+                        email:johndoe@gmail.com
+                    </div>
                 </div>
-                <div>
-                    username:johndoe
-                </div>
-                <div>
-                    email:johndoe@gmail.com
-                </div>
-            </div>
-        );
+            );
+        }
     }
+    ```
+- inside `User.js` create a `constructor` function. paste there `console.log('User created!')`
+    > don't forget to call to `super()`.
+- on the root of the application remove all the css styles and paste this
+```css
+/* App.css */
+.user-item{
+   width: 300px;
+   border-radius: 10px;
+   border: solid 1px lightgray;
+   padding: 10px;
 }
 ```
-```css
-/* User.css */
+- in `App.js` file
+    - add, in the beginning of the file
+        ```jsx
+        ...
+        import User from './src/components/User';
+        ...
+        ```
+    - remove all the `jsx` that return from the `render` function and return 
+        ```jsx
+        ...
+        render() {
+            return (
+                <User/>
+            )
+        }
+        ...
+        ```
 
-```
 
   
