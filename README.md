@@ -120,7 +120,92 @@ render() {
     );
 }
 ```
-- on the `App.js` file add the id, username and email to the `User` element like so.
+- on the `App.js` file add the id, username and email to the `User` element.
 ```jsx
     <User id={1} username={'johndoe'} email={'johndoe@gmail.com'}/>
 ```
+
+## step 3
+### using the state to trigger render change.
+- copy the `User.js` file to `EditUser.js` in the same folder (`src/components`).
+- change the class name, in the `EditUser.js` from `User` to `EditUser`.
+> don't forget to change the `PropTypes` definition as well.
+- on `EditUser` component declare `prop` in the `constructor` and pass it to the `super`.
+after that assign to `this.state` the prop that you gonna use in the component
+```jsx
+constructor(prop) {
+    super(prop);
+    this.state = {
+        id: prop.id,
+        username: prop.username,
+        email: prop.email,
+    }
+}
+```
+> **DON'T** assign `this.state = prop`
+
+> Pro Tip: you can use the ES6 spread operator but **ONLY** if you **DON'T** pass to `prop` function
+> ```jsx
+> constructor(prop) {
+>     super(prop);
+>     this.state = {
+>         ...prop
+>     }
+> }
+> ```
+
+- add `<button>` element to the returning `render` function `jsx`
+```jsx
+    <button className={'btn btn-primary'}>Save</button>
+```
+- in that `<button>` element add `onClick` property and assign it to the `this.save`
+```jsx
+    <button className={'btn btn-primary'} onClick={this.save}>Save</button>
+```
+- add new function to the `EditUser` class component named it `save`
+- on that function call to `this.setState({ userName: 'New User Name'})`
+```jsx
+...
+save() {
+    this.setState({
+        userName: 'New User Name'
+    })
+}
+...
+```
+> _warning_: when calling from `jsx` element to class function the scope changing, that why you need to bind the function to the class. i'm using the ES6 `fat arrow function` like so
+> ```jsx
+> ...
+> save = () => {
+>     this.setState({
+>         userName: 'New User Name'
+>     })
+> }
+> ...
+> ```
+
+- change the render `jsx` to point to the `this.state` and not to `this.prop`
+```jsx
+return (
+    <div className="user-item">
+        ...
+        <div>
+            id:{this.state.id}
+        </div>
+        <div>
+            username:{this.state.username}
+        </div>
+        <div>
+            email:{this.state.email}
+        </div>
+        ...
+    </div>
+)
+```
+- add the `EditUser` jsx element to the `App` component
+```jsx
+<EditUser id={1} username={'johndoe'} email={'johndoe@gmail.com'} />
+```
+## step 4
+### using `<input>` elements in react
+
