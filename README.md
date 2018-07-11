@@ -24,7 +24,7 @@
     ```sh
     yarn add bootstrap
     ```
-- on the `App.js` add the `bootstrap` css like so:
+- on the `App.js` add the `bootstrap` css:
     ```jsx
     import 'bootstrap/dist/css/bootstrap.min.css';
     ```
@@ -102,7 +102,7 @@
         }
         ```
     > note: this process isn't necessary but it's best practice.
-- on the `User.js` file change the hard coded id, username and email to the one that came from the prop like so
+- on the `User.js` file change the hard coded id, username and email to the one that came from the prop
 ```jsx
 render() {
     return (
