@@ -9,13 +9,13 @@ export default class User extends React.Component {
         return (
             <div className="user-item">
                 <div>
-                    id:1
+                    id:{this.props.id}
                 </div>
                 <div>
-                    username:johndoe
+                    username:{this.props.username}
                 </div>
                 <div>
-                    email:johndoe@gmail.com
+                    email:{this.props.email}
                 </div>
             </div>
         );

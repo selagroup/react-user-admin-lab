@@ -9,7 +9,7 @@ class App extends Component {
       <div>
         <h1>User Admin</h1>
         <div className='container-fluid'>
-          <User/>
+          <User id={1} username={'johndoe'} email={'johndoe@gmail.com'} />
         </div>
       </div>
     );

@@ -86,14 +86,14 @@
 
 
 ## step 2
-### pass data from root component to child component
+### pass data from root component to child component.
 
-- declare the properties that `User` component going to use by adding `propTypes`
-    - add at the beginning of `User` file 
+- declare the properties that `User` component going to use by adding `propTypes`.
+    - add at the beginning of `User` file:
         ```jsx
         import PropTypes from 'prop-types';
         ```
-    - and on the ending of the file
+    - and on the ending of the file:
         ```jsx
         User.propTypes = {
             id: PropTypes.number.isRequired,
@@ -101,4 +101,26 @@
             email: PropTypes.string.isRequired
         }
         ```
-  
+    > note: this process isn't necessary but it's best practice.
+- on the `User.js` file change the hard coded id, username and email to the one that came from the prop like so
+```jsx
+render() {
+    return (
+        <div className="user-item">
+            <div>
+                id:{this.props.id}
+            </div>
+            <div>
+                username:{this.props.username}
+            </div>
+            <div>
+                email:{this.props.email}
+            </div>
+        </div>
+    );
+}
+```
+- on the `App.js` file add the id, username and email to the `User` element like so.
+```jsx
+    <User id={1} username={'johndoe'} email={'johndoe@gmail.com'}/>
+```
