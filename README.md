@@ -244,3 +244,29 @@ update = (event) => {
 }
 ...
 ```
+
+## step 4.5
+### change `User` component to functional component
+- copy the `render` return function.
+- delete the `User` class.
+- create new function name `User` and paste the `render` return function.
+- in the class, on the argument of the function, declare `props`.
+- remove all of the `this` from from the pasted `render` return.
+```jsx
+export default function User(props) {
+    return (
+        <div className="user-item">
+            <div>
+                id:{props.id}
+            </div>
+            <div>
+                username:{props.username}
+            </div>
+            <div>
+                email:{props.email}
+            </div>
+        </div>
+    );
+}
+```
+> Pro Tip: you can still define the `propTypes` just like you did in the class.
