@@ -208,4 +208,39 @@ return (
 ```
 ## step 4
 ### using `<input>` elements in react
-
+- on `EditUser` component change the render `jsx` username and email to input element.
+- assign the value of the email element to `value={this.state.email}`.
+- assign `update` function to `onChange` property.
+- add `name` attribute `name='email'`
+- add className '`className=form-control'`.
+- do this also to the `username` as well.
+```jsx
+    render() {
+        return (
+            <div className="user-item">
+                <div>
+                    id:{this.state.id}
+                </div>
+                <div>
+                    username: <input value={this.state.username} className='form-control' name='username' onChange={this.update} />
+                </div>
+                <div>
+                    email: <input value={this.state.email} className='form-control' name='email' onChange={this.update} />
+                </div>
+                <button className={'btn btn-primary'} onClick={this.save}>Save</button>
+            </div>
+        );
+    }
+```
+- add `update` function to the `EditUser` component class.
+```jsx
+...
+update = (event) => {
+    let change = {};
+    change[event.target.name] = event.target.value
+    this.setState({
+        ...change
+    });
+}
+...
+```

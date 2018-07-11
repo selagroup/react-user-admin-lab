@@ -8,7 +8,14 @@ export default class EditUser extends React.Component {
             username: prop.username,
             email: prop.email,
         }
-    
+
+    }
+    update = (event) => {
+        let change = {};
+        change[event.target.name] = event.target.value
+        this.setState({
+            ...change
+        });
     }
     save = () => {
         this.setState({
@@ -22,10 +29,10 @@ export default class EditUser extends React.Component {
                     id:{this.state.id}
                 </div>
                 <div>
-                    username:{this.state.username}
+                    username: <input value={this.state.username} className='form-control' name='username' onChange={this.update} />
                 </div>
                 <div>
-                    email:{this.state.email}
+                    email: <input value={this.state.email} className='form-control' name='email' onChange={this.update} />
                 </div>
                 <button className={'btn btn-primary'} onClick={this.save}>Save</button>
             </div>
