@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 export default class User extends React.Component {
     constructor() {
         super();
@@ -19,4 +20,10 @@ export default class User extends React.Component {
             </div>
         );
     }
+}
+
+User.propTypes = {
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired
 }

@@ -85,4 +85,20 @@
         ```
 
 
+## step 2
+### pass data from root component to child component
+
+- declare the properties that `User` component going to use by adding `propTypes`
+    - add at the beginning of `User` file 
+        ```jsx
+        import PropTypes from 'prop-types';
+        ```
+    - and on the ending of the file
+        ```jsx
+        User.propTypes = {
+            id: PropTypes.number.isRequired,
+            username: PropTypes.string.isRequired,
+            email: PropTypes.string.isRequired
+        }
+        ```
   
