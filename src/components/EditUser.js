@@ -18,8 +18,10 @@ export default class EditUser extends React.Component {
         });
     }
     save = () => {
-        this.setState({
-            username: 'New User Name'
+        this.props.save({
+            id: this.props.id,
+            username: this.state.username,
+            email: this.state.email,
         })
     }
     render() {
@@ -43,5 +45,6 @@ export default class EditUser extends React.Component {
 EditUser.propTypes = {
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired
+    email: PropTypes.string.isRequired,
+    save: PropTypes.func.isRequired,
 }

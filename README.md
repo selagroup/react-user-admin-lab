@@ -270,3 +270,52 @@ export default function User(props) {
 }
 ```
 > Pro Tip: you can still define the `propTypes` just like you did in the class.
+
+## step 5
+### binding between components (child-parent-child)
+- on the `EditUser` component create new `propTypes` call `save` of type of `PropTypes.func.isRequired`
+- continue in the `EditUser` component change the function `save` to call `this.prop.save` with the id, username and the email that in the state.
+```jsx
+save = () => {
+    this.props.save({
+        id: this.props.id,
+        username: this.state.username,
+        email: this.state.email,
+    })
+}
+```
+> *info*: don't use spread operator in this case case there is the `save` function property.
+-  in the constructor of the `App` component add a new state, focusUser.
+```jsx
+...
+constructor() {
+    super();
+    this.state = {
+        focusUser: {
+        id: 1,
+        username: 'johndoe',
+        email: 'johndoe@gmail.com',
+        }
+    }
+}
+...
+```
+- create new function on the `App` class call `save`. this function will get a new user and `setState` the `focusUser` with the user using ES6 spread operator.
+```jsx
+save = (user) => {
+    this.setState({
+        focusUser: {...user}
+    })
+}
+```
+> *info*: it's important to use spread operator to lose ref object with the incoming argument.
+- on the `render` function change the `EditUser` and `User` elements to get the id, username and email from `this.state.focusUser`.
+```jsx
+<EditUser id={this.state.focusUser.id} username={this.state.focusUser.username} email={this.state.focusUser.email} />
+<User id={this.state.focusUser.id} username={this.state.focusUser.username} email={this.state.focusUser.email} />
+```
+- in the `EditUser` element add save property that call `{this.save}`
+```jsx
+<EditUser ... save={this.save} ... />
+
+```
