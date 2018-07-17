@@ -8,12 +8,30 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      focusUser: {
-        id: 1,
-        username: 'johndoe',
-        email: 'johndoe@gmail.com',
-      }
-    }
+      focusUser: void 0,
+      users: [
+        {
+          id: 1,
+          username: 'johndoe',
+          email: 'johndoe@gmail.com',
+        },
+        {
+          id: 2,
+          username: 'janedoe',
+          email: 'janedoe@gmail.com',
+        },
+        {
+          id: 3,
+          username: 'johnsmith',
+          email: 'johnsmith@gmail.com',
+        },
+        {
+          id: 4,
+          username: 'janesmith',
+          email: 'janesmith@gmail.com',
+        }
+      ]
+    };
   }
   save = (updateUser) => {
     this.setState({
@@ -21,12 +39,25 @@ class App extends Component {
     })
   }
   render() {
+    let focusUser = this.state.focusUser;
+    let editTag = focusUser ?
+      <EditUser key={this.state.focusUser.id} save={this.save} defaultId={this.state.focusUser.id} defaultUsername={this.state.focusUser.username} defaultEmail={this.state.focusUser.email} />
+      : '';
+
     return (
       <div>
         <h1>User Admin</h1>
         <div className='container-fluid'>
-          <EditUser save={this.save} id={this.state.focusUser.id} username={this.state.focusUser.username} email={this.state.focusUser.email} />
-          <User id={this.state.focusUser.id} username={this.state.focusUser.username} email={this.state.focusUser.email} />
+          {editTag}
+          {this.state
+            .users
+            .map((user, i) =>
+              <User
+                key={i}
+                id={user.id}
+                username={user.username}
+                email={user.email}/>)
+          }
         </div>
       </div>
     );

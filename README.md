@@ -317,3 +317,74 @@ save = (user) => {
 <EditUser ... save={this.save} ... />
 
 ```
+
+## step 6
+### working with dynamic jsx elements
+- go to `App` component and in the constructor clear the `focusUser` value and create `users` state with users.
+```jsx
+constructor() {
+    super();
+    this.state = {
+        focusUser: void 0,
+        users: [
+        {
+            id: 1,
+            username: 'johndoe',
+            email: 'johndoe@gmail.com',
+        },
+        {
+            id: 2,
+            username: 'janedoe',
+            email: 'janedoe@gmail.com',
+        },
+        {
+            id: 3,
+            username: 'johnsmith',
+            email: 'johnsmith@gmail.com',
+        },
+        {
+            id: 4,
+            username: 'janesmith',
+            email: 'janesmith@gmail.com',
+        }
+        ]
+    };
+}
+```
+- in the `render` function create new `let` variable call `editTag`.
+- check if `this.state.focusUser` exist, if so assign the `editTag` to new `EditUser` with the properties from `this.state.focusUser` if not assign empty string.
+```jsx
+let focusUser = this.state.focusUser;
+let editTag = focusUser ?
+    <EditUser key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+    : '';
+
+```
+- in the `render` return function replace the `EditUser` element with carly braces and the `editTag` variable.
+```jsx
+<div>
+    <h1>User Admin</h1>
+    <div className='container-fluid'>
+        {editTag}
+    </div>
+</div>
+```
+- continue, using curly braces creating `User` element base on `this.state.users`.
+``` jsx
+<div>
+    <h1>User Admin</h1>
+    <div className='container-fluid'>
+        {editTag}
+        {this.state
+        .users
+        .map((user, i) =>
+            <User
+            key={i}
+            id={user.id}
+            username={user.username}
+            email={user.email} />)
+        }
+    </div>
+</div>
+```
+> note: both practices are fine. you can do what is more readable for you.
