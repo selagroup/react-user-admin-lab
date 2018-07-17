@@ -4,9 +4,9 @@ export default class EditUser extends React.Component {
     constructor(prop) {
         super(prop);
         this.state = {
-            id: prop.id,
-            username: prop.username,
-            email: prop.email,
+            id: prop.defaultId,
+            username: prop.defaultUsername,
+            email: prop.defaultEmail,
         }
 
     }
@@ -19,7 +19,7 @@ export default class EditUser extends React.Component {
     }
     save = () => {
         this.props.save({
-            id: this.props.id,
+            id: this.state.id,
             username: this.state.username,
             email: this.state.email,
         })
@@ -43,8 +43,8 @@ export default class EditUser extends React.Component {
 }
 
 EditUser.propTypes = {
-    id: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
+    defaultId: PropTypes.number,
+    defaultUsername: PropTypes.string,
+    defaultEmail: PropTypes.string,
     save: PropTypes.func.isRequired,
 }

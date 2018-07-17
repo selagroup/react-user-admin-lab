@@ -129,30 +129,28 @@ render() {
 ### using the state to trigger render change.
 - copy the `User.js` file to `EditUser.js` in the same folder (`src/components`).
 - change the class name, in the `EditUser.js` from `User` to `EditUser`.
-> don't forget to change the `PropTypes` definition as well.
 - on `EditUser` component declare `prop` in the `constructor` and pass it to the `super`.
 after that assign to `this.state` the prop that you gonna use in the component
 ```jsx
 constructor(prop) {
     super(prop);
     this.state = {
-        id: prop.id,
-        username: prop.username,
-        email: prop.email,
+        id: prop.defaultId,
+        username: prop.defaultUsername,
+        email: prop.defaultEmail,
     }
 }
 ```
 > **DON'T** assign `this.state = prop`
-
-> Pro Tip: you can use the ES6 spread operator but **ONLY** if you **DON'T** pass to `prop` function
-> ```jsx
-> constructor(prop) {
->     super(prop);
->     this.state = {
->         ...prop
->     }
-> }
-> ```
+> this will made problem when we try to change the prop form the parent component.
+- change the `PropTypes` definition.
+```jsx
+EditUser.propTypes = {
+    defaultId: PropTypes.number,
+    defaultUsername: PropTypes.string,
+    defaultEmail: PropTypes.string,
+}
+```
 
 - add `<button>` element to the returning `render` function `jsx`
 ```jsx
@@ -278,7 +276,7 @@ export default function User(props) {
 ```jsx
 save = () => {
     this.props.save({
-        id: this.props.id,
+        id: this.state.id,
         username: this.state.username,
         email: this.state.email,
     })
