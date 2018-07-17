@@ -34,8 +34,23 @@ class App extends Component {
     };
   }
   save = (updateUser) => {
+    let users = this.state.users.map((u) => {
+      if (u.id === updateUser.id) {
+        return {
+          ...updateUser
+        }
+      } else {
+        return u;
+      }
+    })
     this.setState({
-      focusUser: {...updateUser}
+      users: users
+    })
+  }
+  focus = (id) => {
+    let focusUser = this.state.users.filter((u) => u.id === id)[0]
+    this.setState({
+      focusUser: { ...focusUser }
     })
   }
   render() {
@@ -53,6 +68,8 @@ class App extends Component {
             .users
             .map((user, i) =>
               <User
+                onClick={this.focus}
+                selected={focusUser && focusUser.id === user.id} 
                 key={i}
                 id={user.id}
                 username={user.username}

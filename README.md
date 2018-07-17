@@ -388,3 +388,85 @@ let editTag = focusUser ?
 </div>
 ```
 > note: both practices are fine. you can do what is more readable for you.
+
+## step 6.5
+### practice binding between components
+- on `App` component add `focus` function with id as parameter, find the user from the `this.state.users` and `setState` the `focusUser` with the user that found in the `users` array
+```jsx
+focus = (id) => {
+    let focusUser = this.state.users.filter((u) => u.id === id)[0]
+    this.setState({
+        focusUser: { ...focusUser }
+    })
+}
+```
+- go to `User` component and add in the `propTypes` `selected` and `onClick` properties.
+```jsx
+User.propTypes = {
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    selected: PropTypes.bool,
+    onClick: PropTypes.func.isRequired,
+}
+```
+- stay on the `User` component and on the return function add to the wrapper div `onClick` with the `props.onClick`.
+```jsx
+return (
+    <div onClick={props.onClick.bind(this, props.id)} className="user-item">
+    ...
+);
+```
+> note: this time using the function `bind` function to define the context, also passing `props.id` so when the function will call it will pass the user id in the arguments
+- add to the `className` property a condition, when `props.selected` is `true` then add `selected` css class.
+```jsx
+return (
+    <div onClick={props.onClick.bind(this, props.id)}
+        className={'user-item ' + (props.selected ? 'selected' : '')}>
+    ...
+);
+```
+- go back to `App` component add to the `User` element the `onClick` and `selected` properties
+```jsx
+return (
+    <div>
+        <h1>User Admin</h1>
+        <div className='container-fluid'>
+            {editTag}
+            {this.state
+            .users
+            .map((user, i) =>
+                <User
+                onClick={this.focus}
+                selected={focusUser && focusUser.id === user.id} 
+                ...
+                />)
+            }
+        </div>
+    </div>
+);
+```
+- on the `save` function find the user, that send to update, from the `this.state.users` and update the user in the array.
+```jsx
+save = (updateUser) => {
+    let users = this.state.users.map((u) => {
+        if (u.id === updateUser.id) {
+        return {
+            ...updateUser
+        }
+        } else {
+        return u;
+        }
+    })
+    this.setState({
+        users: users
+    })
+}
+```
+- go to `App.css` and add css style for `.user-item.selected`
+```css
+.user-item.selected {
+  background-color: lightblue;
+}
+```
+

@@ -4,3 +4,7 @@
   border: solid 1px lightgray;
   padding: 10px;
 }
+
+.user-item.selected {
+  background-color: lightblue;
+}
