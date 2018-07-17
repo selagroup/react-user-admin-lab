@@ -470,3 +470,57 @@ save = (updateUser) => {
 }
 ```
 
+## step 7
+### nested and empty component.
+- on `src/components` create new file call `UserList.js`.
+- on that file import `React` from `react` and `export`function `UserList`
+```jsx
+import React from 'react';
+export default function UserList(props) {
+}
+```
+- return in this function new empty component `React.Fragment`.
+- on the beginning of add `<hr/>` tag
+- after that add a `p` tag that print the number of user, do that using `React.Children.count`.
+- continue by mapping, using curly braces, the `props.children` so that even user will wrap by div with class `even` and odd with class `odd`.
+```jsx
+return (
+    <React.Fragment>
+        <hr/>
+        <p>there are {React.Children.count(props.children)} users.</p>
+        <div className='list-group'>
+            {props.children.map((user, i) =>
+                <div key={i} className={(i % 2 === 0 ? 'even' : 'odd')}>
+                    {user}
+                </div>
+            )}
+        </div>
+    </React.Fragment>
+)
+```
+- on `App` component import the new `UserList` component.
+```jsx
+import UserList from './components/UserList';
+```
+- wrap the users mapping with the new `UserList` tag.
+```jsx
+<UserList>
+    {this.state
+        .users
+        .map((user, i) =>
+        <User
+            onClick={this.focus}
+            selected={focusUser && focusUser.id === user.id} 
+            key={i}
+            id={user.id}
+            username={user.username}
+            email={user.email}/>)
+    }
+</UserList>
+```
+- on the `App.css` file add the css for odd class
+```css
+.odd > div {
+  background: lightgrey;
+}
+```

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import User from './components/User';
+import UserList from './components/UserList';
 import './App.css';
 import EditUser from './components/EditUser';
 
@@ -60,21 +61,23 @@ class App extends Component {
       : '';
 
     return (
-      <div>
+      <div> 
         <h1>User Admin</h1>
         <div className='container-fluid'>
           {editTag}
-          {this.state
-            .users
-            .map((user, i) =>
-              <User
-                onClick={this.focus}
-                selected={focusUser && focusUser.id === user.id} 
-                key={i}
-                id={user.id}
-                username={user.username}
-                email={user.email}/>)
-          }
+          <UserList>
+            {this.state
+              .users
+              .map((user, i) =>
+                <User
+                  onClick={this.focus}
+                  selected={focusUser && focusUser.id === user.id} 
+                  key={i}
+                  id={user.id}
+                  username={user.username}
+                  email={user.email}/>)
+            }
+          </UserList>
         </div>
       </div>
     );

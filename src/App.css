@@ -8,3 +8,7 @@
 .user-item.selected {
   background-color: lightblue;
 }
+
+.odd > div {
+  background: lightgrey;
+}
