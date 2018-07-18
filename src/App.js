@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import User from './components/User';
+import NotFound from './components/NotFound';
 import UserList from './components/UserList';
 import './App.css';
 import EditUser from './components/EditUser';
+import { BrowserRouter as Router, Route, Switch, Link, Redirect } from 'react-router-dom';
 
 class App extends Component {
   constructor() {
@@ -54,30 +56,44 @@ class App extends Component {
       focusUser: { ...focusUser }
     })
   }
+  bindEditUserById = (props) => {
+    let id = Number(props.match.params.id);
+    if (!Number(id)) return <NotFound />
+
+    let focusUser = this.state.users.filter((u) => u.id === id)[0];
+    if (!focusUser) return <NotFound />
+
+    return <EditUser {...props} key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+  }
   render() {
     let focusUser = this.state.focusUser;
-    let editTag = focusUser ?
-      <EditUser key={this.state.focusUser.id} save={this.save} defaultId={this.state.focusUser.id} defaultUsername={this.state.focusUser.username} defaultEmail={this.state.focusUser.email} />
-      : '';
-
     return (
-      <div> 
+      <div>
         <h1>User Admin</h1>
         <div className='container-fluid'>
-          {editTag}
-          <UserList>
-            {this.state
-              .users
-              .map((user, i) =>
-                <User
-                  onClick={this.focus}
-                  selected={focusUser && focusUser.id === user.id} 
-                  key={i}
-                  id={user.id}
-                  username={user.username}
-                  email={user.email}/>)
-            }
-          </UserList>
+          <Router>
+            <Switch>
+              <Route path='/edit/:id' component={this.bindEditUserById} />
+              <Route path='/users'>
+                <UserList>
+                  {this.state
+                    .users
+                    .map((user, i) =>
+                      <Link to={'/edit/' + user.id} key={i}>
+                        <User
+                          onClick={this.focus}
+                          selected={focusUser && focusUser.id === user.id}
+                          id={user.id}
+                          username={user.username}
+                          email={user.email} />
+                      </Link>)
+                  }
+                </UserList>
+              </Route>
+              <Redirect from='/' to='/users' />
+              <Route component={NotFound} />
+            </Switch>
+          </Router>
         </div>
       </div>
     );

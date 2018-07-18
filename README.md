@@ -524,3 +524,197 @@ import UserList from './components/UserList';
   background: lightgrey;
 }
 ```
+
+## step 8
+### routing using `react-router-dom`
+
+- install `react-router-dom` and save it on the `package.json`
+```sh
+npm i -S react-router-dom
+```
+- on the `App` component add `BrowserRouter`, `Route` and `Switch` to the file
+> Pro Tip: use `BrowserRouter as Router` to map the `BrowserRouter` to `Router` variable (best practice).
+```jsx
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+```
+- on the `render` function remove the `editTag`, copy the `<UserList>` tag (with it's nested element).
+- under the `<div className='container-fluid'>` add the `<Router>`, `<Switch>`.
+- create two `<Route>` element. one for the `<EditUser>` element and one for the `<User>` element.
+- on the `<Route>` element add `path` 
+```jsx
+<div className='container-fluid'>
+    <Router>
+        <Switch>
+            <Route path='/edit/:id'/>
+            <Route path='/users'>
+            </Route>
+        </Switch>
+    </Router>
+</div>
+```
+- open and close the users `<Route>` and take the `<UserList>` you copy and paste as nested element.
+```jsx
+<div className='container-fluid'>
+    <Router>
+        <Switch>
+            <Route path='/edit/:id'/>
+            <Route path='/users'>
+                <UserList>
+                {this.state
+                    .users
+                    .map((user, i) =>
+                    <User
+                        onClick={this.focus}
+                        selected={focusUser && focusUser.id === user.id} 
+                        key={i}
+                        id={user.id}
+                        username={user.username}
+                        email={user.email}/>)
+                }
+                </UserList>
+            </Route>
+        </Switch>
+    </Router>
+</div>
+```
+- create new function in the `App` component call `bindEditUserById`, pass `props` as argument.
+```jsx
+bindEditUserById = (props) => {
+}
+```
+- check if `props.match.params.id` is a `Number`. if not return empty string.
+- filter, from `this.state.users`, the user with that id. if there isn't return empty string.
+```jsx
+bindEditUserById = (props) => {
+    let id = Number(props.match.params.id;
+    if (!Number(id)) return ''
+
+    let focusUser = this.state.users.filter((u) => u.id === id)[0];
+    if (!focusUser) return ''
+}
+```
+- return the `<EditUser>` element with the `key`, `save`, `defaultId`, `defaultUsername` and `defaultEmail` properties from the filter user.
+```jsx
+bindEditUserById = (props) => {
+    let id = Number(props.match.params.id;
+    if (!Number(id)) return ''
+
+    let focusUser = this.state.users.filter((u) => u.id === id)[0];
+    if (!focusUser) return ''
+
+    return <EditUser key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+}
+```
+- pass the `props` argument as ES6 speared operator in the properties
+```jsx
+bindEditUserById = (props) => {
+    let id = Number(props.match.params.id;
+    if (!Number(id)) return ''
+
+    let focusUser = this.state.users.filter((u) => u.id === id)[0];
+    if (!focusUser) return ''
+
+    return <EditUser {...props} key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+}
+```
+- on the `render` return function in the edit `<Route>` add new property call `component` and pass it the `this.bindEditUserById`
+```jsx
+<div className='container-fluid'>
+    <Router>
+        <Switch>
+            <Route path='/edit/:id' component={this.bindEditUserById} />
+            ...
+        </Switch>
+    </Router>
+</div>
+```
+- import `Link` component from `react-router-dom`.
+```jsx
+import { ..., Link } from 'react-router-dom';
+```
+- wrap the `<User>` element inside the `<UserList>` component with `<Link>` and add `to` property to `edit` plus the user id
+```jsx
+<Link to={'/edit/' + user.id} key={i}>
+    <User ... />
+</Link>
+```
+> warning: don't forget to change the `key` property from the `<User>` to the `<Link>` element.
+- import `Redirect` component from `react-router-dom`.
+```jsx
+import { ..., Redirect } from 'react-router-dom';
+```
+- add `<Redirect>` component to the `<Switch>` element.
+- in the `<Redirect>` add two properties, `from='/'` and `to='users'`
+```jsx
+<Redirect from='/' to='/users' />
+```
+- create new component in `src/components` folder call `NotFound`
+```jsx
+import React from 'react';
+export default function NotFound(props) {
+    return (
+        <React.Fragment>
+            <h2>404 page not found</h2>
+        </React.Fragment>
+    );
+}
+```
+- import `Link` component from `react-router-dom`.
+```jsx
+import { Link } from 'react-router-dom';
+```
+- add `<Link>` element with `to` property to the `users` page
+```jsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+export default function NotFound(props) {
+    return (
+        <React.Fragment>
+            <h2>404 page not found</h2>
+            <Link to={'/users'}> Go Back</Link>
+        </React.Fragment>
+    );
+}
+```
+- back to the `App` component import `NotFound` component.
+```jsx
+import NotFound from './components/NotFound';
+```
+- on the `bindEditUserById` function, replace the return empty string with the `<NotFound>` component
+```jsx
+bindEditUserById = (props) => {
+    let id = Number(props.match.params.id);
+    if (!Number(id)) return <NotFound />
+
+    let focusUser = this.state.users.filter((u) => u.id === id)[0];
+    if (!focusUser) return <NotFound />
+    return <EditUser {...props} key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+}
+```
+- add to the `<Switch>` element in the return of the render function `<Route>` to the `<NotFound>` component
+```jsx
+<Switch>
+    ...
+    <Route component={NotFound} />
+</Switch>
+```
+> warning: put that route as the last element (the `<Switch>` component related on the ordering of his children).
+- go to the `EditUser` component and add to the `EditUser.propTypes` `history: PropTypes.object,`
+```jsx
+EditUser.propTypes = {
+    ...
+    history: PropTypes.object,
+    ...
+ }
+```
+- on the `save` function check if there is `this.props.history` and if so use the `push` function to change the route to `/users`.
+```jsx
+save = () => {
+    ...
+    if (this.props.history) {
+        this.props.history.push('/users');
+    }
+}
+```
+> Pro Tip: best practice is change page after the function succeeded.
+

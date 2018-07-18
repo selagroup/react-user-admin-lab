@@ -22,7 +22,10 @@ export default class EditUser extends React.Component {
             id: this.state.id,
             username: this.state.username,
             email: this.state.email,
-        })
+        });
+        if (this.props.history) {
+            this.props.history.push('/users');
+        }
     }
     render() {
         return (
@@ -43,6 +46,7 @@ export default class EditUser extends React.Component {
 }
 
 EditUser.propTypes = {
+    history: PropTypes.object,
     defaultId: PropTypes.number,
     defaultUsername: PropTypes.string,
     defaultEmail: PropTypes.string,
