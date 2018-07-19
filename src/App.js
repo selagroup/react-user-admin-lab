@@ -62,8 +62,11 @@ class App extends Component {
 
     let focusUser = this.state.users.filter((u) => u.id === id)[0];
     if (!focusUser) return <NotFound />
-
-    return <EditUser {...props} key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+    let afterSave = (updateUser) => {
+      this.save(updateUser);
+      props.history.push('/users');
+    }
+    return <EditUser {...props} key={focusUser.id} save={afterSave} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
   }
   render() {
     let focusUser = this.state.focusUser;

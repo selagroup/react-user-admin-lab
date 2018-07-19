@@ -593,7 +593,7 @@ bindEditUserById = (props) => {
     if (!focusUser) return ''
 }
 ```
-- return the `<EditUser>` element with the `key`, `save`, `defaultId`, `defaultUsername` and `defaultEmail` properties from the filter user.
+- create new function call `afterSave` and pass argument `updateUser`. on that function call to `this.save(updateUser)` and after that call to `props.history.push('/users')`.
 ```jsx
 bindEditUserById = (props) => {
     let id = Number(props.match.params.id;
@@ -602,10 +602,13 @@ bindEditUserById = (props) => {
     let focusUser = this.state.users.filter((u) => u.id === id)[0];
     if (!focusUser) return ''
 
-    return <EditUser key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+    let afterSave = (updateUser) => {
+      this.save(updateUser);
+      props.history.push('/users');
+    }
 }
 ```
-- pass the `props` argument as ES6 speared operator in the properties
+- return the `<EditUser>` element with the `key`, `defaultId`, `defaultUsername` and `defaultEmail` properties from the filter user and for the `save` property pass the `afterSave`.
 ```jsx
 bindEditUserById = (props) => {
     let id = Number(props.match.params.id;
@@ -614,9 +617,15 @@ bindEditUserById = (props) => {
     let focusUser = this.state.users.filter((u) => u.id === id)[0];
     if (!focusUser) return ''
 
-    return <EditUser {...props} key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+    let afterSave = (updateUser) => {
+      this.save(updateUser);
+      props.history.push('/users');
+    }
+
+    return <EditUser key={focusUser.id} save={afterSave} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
 }
 ```
+
 - on the `render` return function in the edit `<Route>` add new property call `component` and pass it the `this.bindEditUserById`
 ```jsx
 <div className='container-fluid'>
@@ -688,7 +697,7 @@ bindEditUserById = (props) => {
 
     let focusUser = this.state.users.filter((u) => u.id === id)[0];
     if (!focusUser) return <NotFound />
-    return <EditUser {...props} key={focusUser.id} save={this.save} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
+    ...
 }
 ```
 - add to the `<Switch>` element in the return of the render function `<Route>` to the `<NotFound>` component
@@ -699,22 +708,5 @@ bindEditUserById = (props) => {
 </Switch>
 ```
 > warning: put that route as the last element (the `<Switch>` component related on the ordering of his children).
-- go to the `EditUser` component and add to the `EditUser.propTypes` `history: PropTypes.object,`
-```jsx
-EditUser.propTypes = {
-    ...
-    history: PropTypes.object,
-    ...
- }
-```
-- on the `save` function check if there is `this.props.history` and if so use the `push` function to change the route to `/users`.
-```jsx
-save = () => {
-    ...
-    if (this.props.history) {
-        this.props.history.push('/users');
-    }
-}
-```
-> Pro Tip: best practice is change page after the function succeeded.
+
 
