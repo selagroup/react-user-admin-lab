@@ -8,59 +8,15 @@ import EditUser from './components/EditUser';
 import { BrowserRouter as Router, Route, Switch, Link, Redirect } from 'react-router-dom';
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      focusUser: void 0,
-      users: [
-        {
-          id: 1,
-          username: 'johndoe',
-          email: 'johndoe@gmail.com',
-        },
-        {
-          id: 2,
-          username: 'janedoe',
-          email: 'janedoe@gmail.com',
-        },
-        {
-          id: 3,
-          username: 'johnsmith',
-          email: 'johnsmith@gmail.com',
-        },
-        {
-          id: 4,
-          username: 'janesmith',
-          email: 'janesmith@gmail.com',
-        }
-      ]
-    };
-  }
+
   save = (updateUser) => {
-    let users = this.state.users.map((u) => {
-      if (u.id === updateUser.id) {
-        return {
-          ...updateUser
-        }
-      } else {
-        return u;
-      }
-    })
-    this.setState({
-      users: users
-    })
-  }
-  focus = (id) => {
-    let focusUser = this.state.users.filter((u) => u.id === id)[0]
-    this.setState({
-      focusUser: { ...focusUser }
-    })
+    this.props.updateUser(updateUser)
   }
   bindEditUserById = (props) => {
     let id = Number(props.match.params.id);
     if (!Number(id)) return <NotFound />
 
-    let focusUser = this.state.users.filter((u) => u.id === id)[0];
+    let focusUser = this.props.users.filter((u) => u.id === id)[0];
     if (!focusUser) return <NotFound />
     let afterSave = (updateUser) => {
       this.save(updateUser);
@@ -69,7 +25,6 @@ class App extends Component {
     return <EditUser {...props} key={focusUser.id} save={afterSave} defaultId={focusUser.id} defaultUsername={focusUser.username} defaultEmail={focusUser.email} />
   }
   render() {
-    let focusUser = this.state.focusUser;
     return (
       <div>
         <h1>User Admin</h1>
@@ -79,13 +34,10 @@ class App extends Component {
               <Route path='/edit/:id' component={this.bindEditUserById} />
               <Route path='/users'>
                 <UserList>
-                  {this.state
-                    .users
+                  {this.props.users
                     .map((user, i) =>
                       <Link to={'/edit/' + user.id} key={i}>
                         <User
-                          onClick={this.focus}
-                          selected={focusUser && focusUser.id === user.id}
                           id={user.id}
                           username={user.username}
                           email={user.email} />

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export default function User(props) {
     return (
-        <div onClick={props.onClick.bind(this, props.id)}
+        <div 
             className={'user-item ' + (props.selected ? 'selected' : '')}>
             <div>
                 id:{props.id}
@@ -22,6 +22,4 @@ User.propTypes = {
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    selected: PropTypes.bool,
-    onClick: PropTypes.func.isRequired,
 }
