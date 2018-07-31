@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import UserApi from './api/UserApi';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import User from './components/User';
 import NotFound from './components/NotFound';
@@ -12,29 +13,13 @@ class App extends Component {
     super();
     this.state = {
       focusUser: void 0,
-      users: [
-        {
-          id: 1,
-          username: 'johndoe',
-          email: 'johndoe@gmail.com',
-        },
-        {
-          id: 2,
-          username: 'janedoe',
-          email: 'janedoe@gmail.com',
-        },
-        {
-          id: 3,
-          username: 'johnsmith',
-          email: 'johnsmith@gmail.com',
-        },
-        {
-          id: 4,
-          username: 'janesmith',
-          email: 'janesmith@gmail.com',
-        }
-      ]
+      users: []
     };
+    UserApi.asPromise().then((users) => {
+      this.setState({
+        users
+      })
+    })
   }
   save = (updateUser) => {
     let users = this.state.users.map((u) => {
