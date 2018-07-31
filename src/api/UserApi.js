@@ -1,5 +1,6 @@
- class UserApi {
-    list = [
+
+const userApi = {
+    list: [
         {
             id: 1,
             username: 'johndoe',
@@ -20,13 +21,12 @@
             username: 'janesmith',
             email: 'janesmith@gmail.com',
         }
-    ];
-    asPromise() {
+    ],
+    asPromise: function() {
         return new Promise((res) => {
             setTimeout(() => res(this.list), 1000);
         })
     }
 };
 
- const userApi = new UserApi();
- export default userApi;
+module.exports = userApi;

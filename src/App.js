@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import UserApi from './api/UserApi';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import User from './components/User';
 import NotFound from './components/NotFound';
@@ -15,11 +14,8 @@ class App extends Component {
       focusUser: void 0,
       users: []
     };
-    UserApi.asPromise().then((users) => {
-      this.setState({
-        users
-      })
-    })
+    let fetchPromise = fetch('http://localhost:3000/api/users').then((data) => data.json());
+    fetchPromise.then((string) => JSON.parse(string)).then((users) => this.setState({ users }));
   }
   save = (updateUser) => {
     let users = this.state.users.map((u) => {
