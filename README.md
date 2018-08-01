@@ -1,6 +1,7 @@
 # React User Admin Lab
 
 ## step 0
+
 ### create react app
 
 - download node and npm
@@ -19,6 +20,7 @@
     ```
 
 ## step 0.5
+
 - in order to make the ui more friendly and neat i will use a third party css package call `bootstrap`
 - add `bootstrap` to your application by run:
     ```sh
@@ -28,64 +30,82 @@
     ```jsx
     import 'bootstrap/dist/css/bootstrap.min.css';
     ```
+
 ## step 1
+
 ### create your first component
 
-- under `src` create new folder, `components`.
-- in this folder create  User.js file:
-    ```jsx
-    /* User.js */
-    import React from 'react'
-    export default class User extends React.Component {
-        render() {
-            return (
-                <div className="user-item">
-                    <div>
-                        id:1
-                    </div>
-                    <div>
-                        username:johndoe
-                    </div>
-                    <div>
-                        email:johndoe@gmail.com
-                    </div>
+- under `src` create new folder, `users`. on that folder create new folder `components` (`src/users/components`).
+- in this folder create  `User.js` file:
+
+```jsx
+/* src/users/components/User.js */
+import React, { Component } from 'react'
+export default class User extends React.Component {
+    render() {
+        return (
+            <div className="item">
+                <div>
+                    id:1
                 </div>
-            );
-        }
+                <div>
+                    username:johndoe
+                </div>
+                <div>
+                    email:johndoe@gmail.com
+                </div>
+            </div>
+        );
     }
-    ```
+}
+```
+
 - inside `User.js` create a `constructor` function. paste there `console.log('User created!')`
-    > don't forget to call to `super()`.
-- on the root of the application remove all the css styles and paste this
+> don't forget to call to `super()`.
+- on the `src/users` create new folder `styles`.
+- in this folder create new `css` file `user.css`.
+
 ```css
-/* App.css */
-.user-item{
+/* src/users/styles/item.css */
+.item{
    width: 300px;
    border-radius: 10px;
    border: solid 1px lightgray;
    padding: 10px;
 }
 ```
-- in `App.js` file
-    - add, in the beginning of the file
-        ```jsx
-        ...
-        import User from './src/components/User';
-        ...
-        ```
-    - remove all the `jsx` that return from the `render` function and return 
-        ```jsx
-        ...
-        render() {
-            return (
-                <User/>
-            )
-        }
-        ...
-        ```
 
+- in `User` component, add the item `css`
+
+```jsx
+/* src/users/components/User.js */
+import React, { Component } from 'react'
+import '../style/item.css'
+...
+```
+
+- in `App.js` file, import the `User` element.
+
+```jsx
+/* src/App.js */
+import User from 'users/components/User'
+```
+
+- remove all the `jsx` that return from the `render` function and return the `User` Element
+
+```jsx
+/* src/App.js */
+...
+render() {
+    return (
+        <User/>
+    )
+}
+...
+```
 
 ## step 2
+
 ### pass data from root component to child component.
 
 - declare the properties that `User` component going to use by adding `propTypes`.
