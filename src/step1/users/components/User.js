@@ -1,6 +1,6 @@
 import React from 'react'
 import '../styles/item.css'
-export default () => {
+export default function User() {
     return (
         <div className="item">
             <div>

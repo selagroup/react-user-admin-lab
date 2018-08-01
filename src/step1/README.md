@@ -8,7 +8,7 @@
 ```jsx
 /* src/users/components/User.js */
 import React from 'react'
-export default () => {
+export default function User() {
     return (
         <div className="item">
             <div>
