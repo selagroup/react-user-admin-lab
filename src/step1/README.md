@@ -7,28 +7,24 @@
 
 ```jsx
 /* src/users/components/User.js */
-import React, { Component } from 'react'
-export default class User extends React.Component {
-    render() {
-        return (
-            <div className="item">
-                <div>
-                    id:1
-                </div>
-                <div>
-                    username:johndoe
-                </div>
-                <div>
-                    email:johndoe@gmail.com
-                </div>
+import React from 'react'
+export default () => {
+    return (
+        <div className="item">
+            <div>
+                id:1
             </div>
-        );
-    }
+            <div>
+                username:johndoe
+            </div>
+            <div>
+                email:johndoe@gmail.com
+            </div>
+        </div>
+    )
 }
 ```
 
-- inside `User.js` create a `constructor` function. paste there `console.log('User created!')`
-> don't forget to call to `super()`.
 - on the `src/users` create new folder `styles`.
 - in this folder create new `css` file `user.css`.
 
@@ -46,7 +42,7 @@ export default class User extends React.Component {
 
 ```jsx
 /* src/users/components/User.js */
-import React, { Component } from 'react'
+import React from 'react'
 import '../style/item.css'
 ...
 ```
