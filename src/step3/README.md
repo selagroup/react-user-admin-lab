@@ -1,229 +1,70 @@
-# step 2
+# step 3
 
-- declare the properties that `User` component going to use by adding `propTypes`.
-- add at the beginning of `User` file:
+- go to `src/api/user.js` file and create `getUsersSync` and `updateUserSync` function.
+- on `getUserSync` function return `users` const wrap in spread operator
+- on `updateUserSync` function add argument user, [`Array.findIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex) in `users` the user come in the argument , update the `users[userIndex]` with that user and return spread `users`.
 
-```jsx
-/* src/users/components/User.js */
-import PropTypes from 'prop-types';
-...
-User.propTypes = {
-    id: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired
-}
-```
+> [spread array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#Spread_in_array_literals) effectively goes one level deep while copying an array. Therefore, it may be unsuitable for copying multidimensional arrays.
 
-> note: this process isn't necessary but it's best practice.
-
-- on the `User` component change the hard coded id, username and email to the one that came from the props
-
-```jsx
-/* src/users/components/User.js */
-render() {
-    return (
-        <div className="item">
-            <div>
-                id:{this.props.id}
-            </div>
-            <div>
-                username:{this.props.username}
-            </div>
-            <div>
-                email:{this.props.email}
-            </div>
-        </div>
-    );
-}
-```
-
-- create new file `EditUser.js` in the `src/users/components` folder
-- on that file create functional component by import `React` from `react` module and write `export default function EditUser(props){}` also `import '../styles/item.css'`.
-
-```jsx
-/* src/users/components/EditUser.js */
-import React from 'react'
-import '../styles/item.css'
-export default function EditUser(props) {
-
-}
-```
-
-- on `EditUser` function `return` a form that contain `username` and `email` input
-
-```jsx
-/* src/users/components/EditUser.js */
-import React from 'react'
-export default function EditUser(props) {
-    return (
-        <form className="item">
-            <legend>Edit User id</legend>
-            <div className="form-group">
-                <label htmlFor="username">username</label>
-                <input type="text" name="username" className="form-control" id="username" />
-            </div>
-            <div className="form-group">
-                <label htmlFor="email">email</label>
-                <input type="text" name="email" className="form-control" id="email" />
-            </div>
-            <button type="submit" className="btn btn-primary">Save</button>
-        </form>
-
-    )
-}
-```
-
-- import `PropTypes` form `prop-types` module
-- in the bottom of file assign a `propTypes` object, to the `EditUser` function.
-- in that object add `id` key as `PropTypes.string.isRequire`, `username` and `email` keys as `PropTypes.string` and `onChange` and `save` as `PropTypes.func`.
-
-```jsx
-/* src/users/components/EditUser.js */
-import React from 'react'
-export default function EditUser(props) {
-...
-}
-
-EditUser.propTypes = {
-    id: PropTypes.number.isRequired,
-    username: PropTypes.string,
-    email: PropTypes.string,
-    onChange: PropTypes.func,
-    save: PropTypes.func,
-}
-```
-
-- on each of the `input` element add value property with the match `props` value as jsx expression and `onChange` property with `props.onChange` as jsx expression
-
-```jsx
-/* src/users/components/EditUser.js */
-<label htmlFor="username">username</label>
-<input type="text" name="username" className="form-control" id="username"
-value={props.username}
-onChange={props.onChange}
-/>
-...
-<label htmlFor="email">email</label>
-<input type="text" name="email" className="form-control" id="email"
-value={props.email}
-onChange={props.onChange}
-/>
-```
-
-- in the start of the `EditUser` function add new `let onSubmit` variable and assign to function that get `e` as argument.
-- on that function call to `e.preventDefault()` and after that to `props.save`
-
-```jsx
-/* src/users/components/EditUser.js */
-export default function EditUser(props) {
-    const onSubmit = (e) => {
-        e.preventDefault();
-        props.save();
-    }
-}
-```
-
-- assign the `onSubmit` function to the `form` element `onSubmit` property as jsx expression.
-
-```jsx
-/* src/users/components/EditUser.js */
-<form onSubmit={onSubmit} className="item">
-...
-</form>
-```
-
-- create new folder `api` under `src`.
-- on that folder create new file `users.js`
-- in the beginning of the file create `const users` that assign with users.
-
-```jsx
-/* src/api/users.js */
-const users = [
-    {
-        id: 1,
-        username: 'johndoe',
-        email: 'johndoe@gmail.com',
-    },
-    {
-        id: 2,
-        username: 'janedoe',
-        email: 'janedoe@gmail.com',
-    },
-    {
-        id: 3,
-        username: 'johnsmith',
-        email: 'johnsmith@gmail.com',
-    },
-    {
-        id: 4,
-        username: 'janesmith',
-        email: 'janesmith@gmail.com',
-    }
-]
-```
-
-- after that create const `UserApi` object. in that object create new function `getUserByIdSync`. this function will get an `id` as argument and `Array.find` it from the `users` const variable.
-
-```jsx
+```js
 /* src/api/users.js */
 const UsersApi = {
-    getUserByIdSync(id) {
-        return users.find((u) => id === u.id);
-    }
+// ....
+    getUsersSync() {
+        return [...users]
+    },
+    updateUserSync(user) {
+        let userIndex = users.findIndex((u)=>u.id === user.id);
+        users[userIndex] = user;
+        return [...users]
+    },
+// ...
 }
-export default UsersApi
 ```
 
-- on the `App` component import `UserApi` from `src/api/user`.
-- create `constructor` function and in that create a `let` user and assign it with `UserApi.getUserByIdSync(1)`
-> don't forget to call `super()` after the `constructor` function
-- after the `let user` assign to `this.state` new object with `selectedUser` and `editUser` as keys and user as value.
+- go to `App` component `constructor` and remove the `user` variable.
+- on the `this.state` set `users` with empty array.
 
 ```jsx
 /* src/App.js */
+...
 export default class App extends Component {
     constructor() {
         super();
-        let user = UsersApi.getUserByIdSync(1);
         this.state = {
-            selectedUser: user,
-            editUser: user
+           users: []
         }
     }
     ...
 }
 ```
 
-- create two new function in the `App` class, `saveEditUser` and `editUserChange`
-> make sure those functions are assign as fat arrow function so they will bind to the class context.
+- add `componentDidMount` function in `App` class component. in it call `this.setState` with new object that have `users` as key and `UserApi.getUserSync()` as value.
 
 ```jsx
 /* src/App.js */
+...
 export default class App extends Component {
     ...
-    saveEditUser = () => {
-    }
-    editUserChange = () => {
+    componentDidMount() {
+        this.setState({
+            users: UsersApi.getUsersSync()
+        })
     }
     ...
 }
 ```
 
-- on the `saveEditUser` call to `this.setState` with function that get an `oldState` as argument and return empty object.
-- on that empty object set `selectedUser` key and on the value assign object with the properties of the `oldState.selectedUser` and `oldState.editUser` spread.
-> #### [Spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#Spread_in_object_literals) allows an object expression to be expanded in places where zero or more key-value pairs (for object literals) are expected.
+- add `selectUser` function in `App` class component that get `id` as argument. in that function call to `this.setState` with function that get an `oldState` as argument and return empty object.
 
 ```jsx
 /* src/App.js */
+...
 export default class App extends Component {
     ...
-    saveEditUser = () => {
+    selectUser = (id) => {
         this.setState((oldState) => {
             return {
-                selectedUser: {
-                    ...oldState.selectedUser,
-                    ...oldState.editUser,
-                }
             }
         })
     }
@@ -231,29 +72,19 @@ export default class App extends Component {
 }
 ```
 
-> notice that the order of the spread is important cause we want to overwrite what on the `selectedUser` state
-
-- on the `editUserChange` function add `e` as argument
-- create `let editUser` variable that assign with object with `[e.target.name]` as key and `e.target.value` as value
-
-> [computed property names](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names) Starting with ECMAScript 2015, the object initializer syntax also supports computed property names. That allows you to put an expression in brackets [].
-
-- next call `this.setState` with function as argument that get `oldState` as argument and return spread `oldState.selectedUser` and `oldState.editUser` ([Spread syntax](#spread_syntax))
+- [Array.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find) the user from `oldState.users` and assign it to `const editUser`.
+- return the `editUser` as [Property definitions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Property_definitions).
 
 ```jsx
 /* src/App.js */
+...
 export default class App extends Component {
     ...
-    editUserChange = (e) => {
-        let editUser = {
-            [e.target.name]: e.target.value
-        }
+    selectUser = (id) => {
         this.setState((oldState) => {
+            const editUser = { ...oldState.users.find((u) => id === u.id) };
             return {
-                selectedUser: {
-                    ...oldState.editUser,
-                    ...editUser,
-                }
+                editUser
             }
         })
     }
@@ -261,53 +92,224 @@ export default class App extends Component {
 }
 ```
 
-> notice that the order of the spread is important cause we want to overwrite what on the `editUser` state
+- on `saveEditUser` instead of calling the spread `oldState.selectedUser` and `oldState.editUser` assign the user with `UsersApi.updateUserSync(oldState.editUser)` call
 
-- import the `EditUser` element from `./users/components/EditUser` and add it to the return `render` function under the `User` element with the `this.state.editUser` spread.
-
-```jsx
+```diff
 /* src/App.js */
-...
-import EditUser from './users/components/EditUser';
-...
-export default class App extends Component {
-    ...
-    render() {
-        <div style={style}>
-            <h1> User Admin </h1>
-            <div className="row">
-                <div className="col-xs-12 col-sm-8">
-                    <User {...this.state.selectedUser} />
-                </div>
-                <div className="col-xs-12 col-sm-4">
-                    <EditUser {...this.state.editUser}/>
-                </div>
-            </div>
-        </div>
-    }
+saveEditUser = () => {
+    this.setState((oldState) => ({
++        users: UsersApi.updateUserSync(oldState.editUser)
+-        ...oldState.selectedUser,
+-        ...oldState.editUser,
+    }))
 }
 ```
 
-- on the `EditUser` element add `save` and `onChange` properties and assign the `save` property to `this.saveEditUser` as jsx expression and the `onChange` property to `this.editUserChange` as jsx expression.
+```jsx
+/* src/App.js */
+saveEditUser = () => {
+    this.setState((oldState) => ({
+        users: UsersApi.updateUserSync(oldState.editUser)
+    }))
+}
+```
+
+- on `editUserChange` function change `selectedUser` spread to `editUser`
+
+```diff
+editUserChange = (e) => {
+    let editUser = {
+        [e.target.name]: e.target.value
+    }
+    this.setState((oldState) => {
+        return {
+            editUser: {
+-               ...oldState.selectedUser,
++               ...oldState.editUser,
+                ...editUser,
+            }
+        }
+    })
+}
+```
+
+```jsx
+editUserChange = (e) => {
+    let editUser = {
+        [e.target.name]: e.target.value
+    }
+    this.setState((oldState) => {
+        return {
+            editUser: {
+                ...oldState.editUser,
+                ...editUser,
+            }
+        }
+    })
+}
+```
+
+- go to the `render` function and before `return` add new `let editUser` and assign it to empty string.
+- check if there `this.state.editUser`, if so assign `editUser` to `EditUser` element (bind with the properties he need).
+
+```jsx
+render() {
+    ...
+   let editUser = ''
+    if (this.state.editUser) {
+        editUser = <EditUser {...this.state.editUser}
+            save={this.saveEditUser}
+            onChange={this.editUserChange} />
+    }
+    return (
+        ...
+    )
+    ...
+}
+```
+
+- remove the `EditUser` from the return JSX and replace it with the `editUser` variable as JSX expression.
+
+```diff
+<div className="col-xs-12 col-sm-4">
++    {editUser}
+-    <EditUser {...this.state.editUser}
+-        save={this.saveEditUser}
+-        onChange={this.editUserChange} />
+</div>
+```
+
+```jsx
+<div className="col-xs-12 col-sm-4">
+    {editUser}
+</div>
+```
+
+- remove the `User` element and and replace it with JSX expression that map the `this.state.users` to a list of users.
+
+```diff
+<div className="col-xs-12 col-sm-8">
++ {this.state.users.map((u) => (
++   <User {...u}/>
++ ))}
+- <User {...this.state.selectedUser} />
+</div>
+```
+
+- wrap the `User` elements with `li` elements and  wrap all of the `li` elements with a single `ul` element.
+- on the `li` elements add `key` property with `u.id` value as JSX expression and `onClick` property that get `this.selectedUser.bind(this,u.id)` as JSX expression.
+
+```diff
+<div className="col-xs-12 col-sm-8">
++    <ul className="list-group">
++        {this.state.users
++           .map((u) => (
++                <li key={u.id}
++                    onClick={this.selectUser.bind(this, u.id)}
++                    className={"list-group-item"}
++                >
+- {this.state.users.map((u) => (
+                    <User {...u}/>
++               </li>
+        ))}
++    </ul>
+</div>
+```
+
+- add `map` to `this.state.users` that add active to the user base on `this.state.editUser`.
+> remember that you need to return the `user` in the map function.
+
+```diff
+<div className="col-xs-12 col-sm-8 list-group">
+    <ul className="list-group">
+        {this.state.users
++            .map((u) => {
++                u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
++                return u
++            })
+            .map((u) => (
+                <li key={u.id}
+                    onClick={this.selectUser.bind(this, u.id)}
+                    className={"list-group-item"}
+                >
+                    <User {...u} />
+                </li>
+            ))}
+    </ul>
+</div>
+```
+
+- add to the `className` on the `li` the `u.active` string.
+
+```diff
+<div className="col-xs-12 col-sm-8 list-group">
+    <ul className="list-group">
+        {this.state.users
+            .map((u) => {
+                u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
+                return u
+            })
+            .map((u) => (
+                <li key={u.id}
+                    onClick={this.selectUser.bind(this, u.id)}
+-                    className={"list-group-item"}
++                    className={"list-group-item " + u.active}
+                >
+                    <User {...u} />
+                </li>
+            ))}
+    </ul>
+</div>
+```
 
 ```jsx
 /* src/App.js */
 export default class App extends Component {
     ...
     render() {
-        <div style={style}>
-            <h1> User Admin </h1>
-            <div className="row">
-                <div className="col-xs-12 col-sm-8">
-                    <User {...this.state.selectedUser} />
-                </div>
-                <div className="col-xs-12 col-sm-4">
-                    <EditUser {...this.state.editUser}
-                        save={this.saveEditUser}
-                        onChange={this.editUserChange} />
+        ...
+        return (
+            <div style={style}>
+                <h1> User Admin </h1>
+                <div className="row">
+                    <div className="col-xs-12 col-sm-8 list-group">
+                        <ul className="list-group">
+                            {this.state.users
+                                .map((u) => {
+                                    u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
+                                    return u
+                                })
+                                .map((u) => (
+                                    <li key={u.id}
+                                        onClick={this.selectUser.bind(this, u.id)}
+                                        className={"list-group-item " + u.active}
+                                    >
+                                        <User {...u} />
+                                    </li>
+                                ))}
+                        </ul>
+                    </div>
+                    <div className="col-xs-12 col-sm-4">
+                        {editUser}
+                    </div>
                 </div>
             </div>
-        </div>
+        )
     }
+    ...
 }
+```
+
+- go to `./src/users/styles/item.css` and add `background` and `color` properties
+
+```css
+/* ./src/users/styles/item.css */
+.item{
+    width: auto;
+    border-radius: 10px;
+    border: solid 1px lightgray;
+    padding: 10px;
+    background: whitesmoke;
+    color:black;
+ }
 ```

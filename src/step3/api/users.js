@@ -23,6 +23,14 @@ const users = [
 const UsersApi = {
     getUserByIdSync(id) {
         return users.find((u) => id === u.id);
+    },
+    getUsersSync() {
+        return [...users]
+    },
+    updateUserSync(user) {
+        let userIndex = users.findIndex((u)=>u.id === user.id);
+        users[userIndex] = user;
+        return [...users]
     }
 }
 export default UsersApi

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './step2/App';
+import App from './step3/App';
 
 
 ReactDOM.render(<App />, document.getElementById('root'));
