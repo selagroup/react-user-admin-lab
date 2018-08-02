@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import User from './users/components/User'
 import EditUser from './users/components/EditUser';
+import UsersApi from './api/users'
 import 'bootstrap/dist/css/bootstrap.min.css'
 export default class App extends Component {
     constructor() {
         super();
-        let user = {
-            id: 1,
-            username: 'johndoe',
-            email: 'johndoe@gmail.com',
-        }
+        let user = UsersApi.getUserByIdSync(1);
         this.state = {
             selectedUser: user,
             editUser: user
@@ -46,11 +43,11 @@ export default class App extends Component {
         return (
             <div style={style}>
                 <h1> User Admin </h1>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-8">
+                <div className="row">
+                    <div className="col-xs-12 col-sm-8">
                         <User {...this.state.selectedUser} />
                     </div>
-                    <div class="col-xs-12 col-sm-4">
+                    <div className="col-xs-12 col-sm-4">
                         <EditUser {...this.state.editUser}
                             save={this.saveEditUser}
                             onChange={this.editUserChange} />
