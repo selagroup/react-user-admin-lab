@@ -56,17 +56,17 @@ export default function EditUser(props) {
 import React from 'react'
 export default function EditUser(props) {
     return (
-        <form class="item">
+        <form className="item">
             <legend>Edit User id</legend>
-            <div class="form-group">
-                <label for="username">username</label>
-                <input type="text" name="username" class="form-control" id="username" />
+            <div className="form-group">
+                <label htmlFor="username">username</label>
+                <input type="text" name="username" className="form-control" id="username" />
             </div>
-            <div class="form-group">
-                <label for="email">email</label>
-                <input type="text" name="email" class="form-control" id="email" />
+            <div className="form-group">
+                <label htmlFor="email">email</label>
+                <input type="text" name="email" className="form-control" id="email" />
             </div>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" className="btn btn-primary">Save</button>
         </form>
 
     )
@@ -97,14 +97,14 @@ EditUser.propTypes = {
 
 ```jsx
 /* src/users/components/EditUser.js */
-<label for="username">username</label>
-<input type="text" name="username" class="form-control" id="username"
+<label htmlFor="username">username</label>
+<input type="text" name="username" className="form-control" id="username"
 value={props.username}
 onChange={props.onChange}
 />
 ...
-<label for="email">email</label>
-<input type="text" name="email" class="form-control" id="email"
+<label htmlFor="email">email</label>
+<input type="text" name="email" className="form-control" id="email"
 value={props.email}
 onChange={props.onChange}
 />
@@ -127,26 +127,56 @@ export default function EditUser(props) {
 
 ```jsx
 /* src/users/components/EditUser.js */
-<form onSubmit={onSubmit} class="item">
+<form onSubmit={onSubmit} className="item">
 ...
 </form>
 ```
 
-- on the `App` component add create `constructor` function and in that create a `let` user and assign to it user object
-> don't forget to call `super()` after the `constructor` function
+- create new folder `api` under `src`.
+- on that folder create new file `users.js`
+- in the beginning of the file create `const users` that assign with users.
 
 ```jsx
-/* src/App.js */
-constructor() {
-    super();
-    let user = {
+/* src/api/users.js */
+const users = [
+    {
         id: 1,
         username: 'johndoe',
         email: 'johndoe@gmail.com',
+    },
+    {
+        id: 2,
+        username: 'janedoe',
+        email: 'janedoe@gmail.com',
+    },
+    {
+        id: 3,
+        username: 'johnsmith',
+        email: 'johnsmith@gmail.com',
+    },
+    {
+        id: 4,
+        username: 'janesmith',
+        email: 'janesmith@gmail.com',
     }
-}
+]
 ```
 
+- after that create const `UserApi` object. in that object create new function `getUserByIdSync`. this function will get an `id` as argument and `Array.find` it from the `users` const variable.
+
+```jsx
+/* src/api/users.js */
+const UsersApi = {
+    getUserByIdSync(id) {
+        return users.find((u) => id === u.id);
+    }
+}
+export default UsersApi
+```
+
+- on the `App` component import `UserApi` from `src/api/user`.
+- create `constructor` function and in that create a `let` user and assign it with `UserApi.getUserByIdSync(1)`
+> don't forget to call `super()` after the `constructor` function
 - after the `let user` assign to `this.state` new object with `selectedUser` and `editUser` as keys and user as value.
 
 ```jsx
@@ -154,11 +184,7 @@ constructor() {
 export default class App extends Component {
     constructor() {
         super();
-        let user = {
-            id: 1,
-            username: 'johndoe',
-            email: 'johndoe@gmail.com',
-        }
+        let user = UsersApi.getUserByIdSync(1);
         this.state = {
             selectedUser: user,
             editUser: user
@@ -249,11 +275,11 @@ export default class App extends Component {
     render() {
         <div style={style}>
             <h1> User Admin </h1>
-            <div class="row">
-                <div class="col-xs-12 col-sm-8">
+            <div className="row">
+                <div className="col-xs-12 col-sm-8">
                     <User {...this.state.selectedUser} />
                 </div>
-                <div class="col-xs-12 col-sm-4">
+                <div className="col-xs-12 col-sm-4">
                     <EditUser {...this.state.editUser}/>
                 </div>
             </div>
@@ -271,11 +297,11 @@ export default class App extends Component {
     render() {
         <div style={style}>
             <h1> User Admin </h1>
-            <div class="row">
-                <div class="col-xs-12 col-sm-8">
+            <div className="row">
+                <div className="col-xs-12 col-sm-8">
                     <User {...this.state.selectedUser} />
                 </div>
-                <div class="col-xs-12 col-sm-4">
+                <div className="col-xs-12 col-sm-4">
                     <EditUser {...this.state.editUser}
                         save={this.saveEditUser}
                         onChange={this.editUserChange} />
