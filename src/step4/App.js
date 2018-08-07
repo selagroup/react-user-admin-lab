@@ -10,9 +10,10 @@ export default class App extends Component {
             users: []
         }
     }
-    componentDidMount() {
+    async componentDidMount() {
+        const users = await UsersApi.getUsers();
         this.setState({
-            users: UsersApi.getUsersSync()
+            users
         })
     }
     selectUser = (id) => {
@@ -23,9 +24,11 @@ export default class App extends Component {
             }
         })
     }
-    saveEditUser = () => {
+    saveEditUser = async () => {
+        let editUser = await UsersApi.updateUser(this.state.editUser);
         this.setState((oldState) => ({
-            users: UsersApi.updateUserSync(oldState.editUser)
+                editUser,
+                users: oldState.users.map((u) => u.id !== editUser.id ? u : editUser)
         }))
     }
     editUserChange = (e) => {
