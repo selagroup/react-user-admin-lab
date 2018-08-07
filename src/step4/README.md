@@ -1,13 +1,13 @@
 # step 4
 
-## set up server
-
-- got to the `Server` folder in the path of the main project.
-
-- in that file run `npm install`
-
-- after it's finish run `npm start`
-
+> ## set up server
+>
+>- got to the `Server` folder in the path of the main project.
+>
+>- in that file run `npm install`
+>
+>- after it's finish run `npm start`
+>
 > go to `http://localhost:3001/users` and you should see a list of users as a response.
 
 - in `UsersApi` two new method
