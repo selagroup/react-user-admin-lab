@@ -10,7 +10,7 @@
 >
 > go to `http://localhost:3001/users` and you should see a list of users as a response.
 
-- in `UsersApi` two new method
+- in `UsersApi` create two new method
   - `getUsers`
   - `updateUser`
 - in the `getUsers` create a `fetch` request to `http://local.directv.com:3001/users`.
@@ -29,7 +29,7 @@ const UsersApi = {
 }
 ```
 
-- in the `updateUser` pass `user` argument, `fetch` to `http://local.directv.com:3001/users/<user.id>`
+- in the `updateUser` pass `user` argument and `fetch` to `http://local.directv.com:3001/users/<user.id>`
 - pass to the `fetch` request options:
   - `method: 'PUT'`
   - `header: {'Content-Type': 'application/json'}`
