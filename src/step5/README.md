@@ -374,3 +374,73 @@ class EditUser extends React.Component {
     }
 }
 ```
+
+## HOC high order component
+
+- create new `Logger.js` file in `src/hoc` folder.
+- create new function with `WrappedComponent` and `componentName` as arguments and return new `class component` that in the `render` function return `<WrappedComponent {...this.props} />`
+
+```jsx
+/* src/hoc/Logger.js */
+import React from 'react'
+export default (WrappedComponent, componentName) => {
+    return class extends React.Component {
+        render() {
+            return (
+                <WrappedComponent {...this.props} />
+            )
+        }
+    }
+}
+```
+
+- create `log` function that get a message and `console.log` it with the `componentName`
+- call to `componentDidMount`,`componentDidUpdate`,`shouldComponentUpdate`,`componentWillUnmount` functions.
+- in those function call to `this.log`;
+
+```jsx
+/* src/hoc/Logger.js */
+import React from 'react'
+export default (WrappedComponent, componentName) => {
+
+    return class extends React.Component {
+        componentDidMount(){
+            this.log('component mounted');
+        }
+
+        componentDidUpdate(){
+            this.log('component updated');
+        }
+
+        shouldComponentUpdate(){
+            this.log('component should update');
+            return true;
+        }
+        componentWillUnmount(){
+            this.log('component removed');
+        }
+        log(msg){
+            console.log( `[${componentName}] - ${msg}`)
+        }
+        render() {
+            return (
+                <WrappedComponent {...this.props} />
+            )
+        }
+    }
+}
+```
+
+- go to `EditUser` component, import `Logger` HOC and on the `export default` call the `Logger` with the `EditUser` class and a string that `edit user`.
+
+```jsx
+/* src/users/components/EditUser.js */
+import Logger from '../../hoc/Logger';
+...
+class EditUser extends React.Component {
+    ...
+}
+...
+export default Logger(EditUser,'edit user');
+
+```
