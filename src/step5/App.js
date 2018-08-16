@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import User from './users/components/User'
+import Pagination from './users/components/Pagination';
 import EditUser from './users/components/EditUser';
 import UsersApi from './api/users'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -7,7 +8,9 @@ export default class App extends Component {
     constructor() {
         super();
         this.state = {
-            users: []
+            users: [],
+            startIndex: 0,
+            inPage: 3,
         }
     }
     async componentDidMount() {
@@ -44,6 +47,12 @@ export default class App extends Component {
             }
         })
     }
+    nextPage = (e) => {
+        this.setState({
+            startIndex: e.startIndex,
+            editUser: null
+        })
+    }
     render() {
         let style = {
             width: '600px',
@@ -56,31 +65,33 @@ export default class App extends Component {
                 onChange={this.editUserChange} />
         }
         return (
-            <div style={style}>
-                <h1> User Admin </h1>
-                <div className="row">
-                    <div className="col-xs-12 col-sm-8 list-group">
-                        <ul className="list-group">
-                            {this.state.users
-                                .map((u) => {
-                                    u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
-                                    return u
-                                })
-                                .map((u) => (
-                                    <li key={u.id}
-                                        onClick={this.selectUser.bind(this, u.id)}
-                                        className={"list-group-item " + u.active}
-                                    >
-                                        <User {...u} />
-                                    </li>
-                                ))}
-                        </ul>
-                    </div>
-                    <div className="col-xs-12 col-sm-4">
-                        {editUser}
+                <div style={style}>
+                    <h1> User Admin </h1>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-8 list-group">
+                            <ul className="list-group">
+                                <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
+                                    {this.state.users
+                                        .map((u) => {
+                                            u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
+                                            return u
+                                        })
+                                        .map((u) => (
+                                            <li key={u.id}
+                                                onClick={this.selectUser.bind(this, u.id)}
+                                                className={"list-group-item " + u.active}
+                                            >
+                                                <User {...u} />
+                                            </li>
+                                        ))}
+                                </Pagination>
+                            </ul>
+                        </div>
+                        <div className={'col-xs-12 col-sm-4'}>
+                            {editUser}
+                        </div>
                     </div>
                 </div>
-            </div>
         )
     }
 }
