@@ -1,6 +1,6 @@
 # step 5
 
-## React.Fragment
+## React.Fragment + props.children
 
 - create new file `Pagination.js` in `src/users/components/`.
 - in that file create new `function component`.
@@ -190,6 +190,7 @@ export default class App extends Component {
 - complete render return function
 
 ```jsx
+/* src/App.js */
 <div style={style}>
     <h1> User Admin </h1>
     <div className="row">
@@ -217,4 +218,159 @@ export default class App extends Component {
         </div>
     </div>
 </div>
+```
+
+## Ref
+
+- convert `EditUser` component from `function component` to `class component`.
+
+```diff
+/* src/users/components/EditUser.js */
+import React from 'react'
+import PropTypes from 'prop-types'
+import '../styles/item.css';
++class EditUser extends React.Component {
++    constructor(props) {
++        super(props);
++    }
++    onSubmit = (e) => {
++        e.preventDefault();
++        this.props.save();
++    }
++    render() {
+-export default function EditUser(props) {
+-    const onSubmit = (e) => {
+-        e.preventDefault();
+-        props.save();
+-    }
+        return (
++            <form onSubmit={this.onSubmit} className="item">
++                <legend>Edit User id:{this.props.id}</legend>
+-            <form onSubmit={onSubmit} className="item">
+-                <legend>Edit User id:{this.props.id}</legend>
+                <div className="form-group">
+                    <label htmlFor="username">username</label>
++                    <input type="text" name="username" className="form-control" id="username"
++                        value={this.props.username}
++                        onChange={this.props.onChange}
+-                    <input ref={nameInput} type="text" name="username" className="form-control" id="username"
+-                        value={props.username}
+-                        onChange={props.onChange}
+                    />
+
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email">email</label>
+                    <input type="text" name="email" className="form-control" id="email"
++                        value={this.props.email}
++                        onChange={this.props.onChange}
+-                        value={props.email}
+-                        onChange={props.onChange}
+                    />
+                </div>
+                <button type="submit" className="btn btn-primary">Save</button>
+            </form>
+
+        )
+    }
+}
++export default EditUser
+```
+
+```jsx
+/* src/users/components/EditUser.js */
+import React from 'react'
+import PropTypes from 'prop-types'
+import '../styles/item.css';
+class EditUser extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.nameInput = React.createRef();
+    }
+    onSubmit = (e) => {
+        e.preventDefault();
+        this.props.save();
+    }
+    render() {
+        return (
+            <form onSubmit={this.onSubmit} className="item">
+                <legend>Edit User id:{this.props.id}</legend>
+                <div className="form-group">
+                    <label htmlFor="username">username</label>
+                    <input ref={this.nameInput} type="text" name="username" className="form-control" id="username"
+                        value={this.props.username}
+                        onChange={this.props.onChange}
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email">email</label>
+                    <input type="text" name="email" className="form-control" id="email"
+                        value={this.props.email}
+                        onChange={this.props.onChange}
+                    />
+                </div>
+                <button type="submit" className="btn btn-primary">Save</button>
+            </form>
+
+        )
+    }
+}
+export default EditUser;
+
+
+EditUser.propTypes = {
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string,
+    email: PropTypes.string,
+    onChange: PropTypes.func,
+    save: PropTypes.func,
+}
+
+```
+
+- in the `constructor` assign to `this.nameInput = React.createRef()`.
+
+```jsx
+/* src/users/components/EditUser.js */
+class EditUser extends React.Component {
+    constructor(props) {
+        super(props);
+        this.nameInput = React.createRef();
+    }
+}
+```
+
+- register to `componentDidMount` and `componentDidUpdate` function in the class.
+- on `componentDidMount` call to `this.nameInput.current.focus()`.
+- on `componentDidMount` check if the `prevProps.id !== this.props.id` and if `true` call to `his.nameInput.current.focus()`.
+
+```jsx
+/* src/users/components/EditUser.js */
+class EditUser extends React.Component {
+    ...
+    componentDidMount() {
+        this.nameInput.current.focus();
+    }
+
+    componentDidUpdate(prevProps) {
+
+        if (prevProps.id !== this.props.id)
+            this.nameInput.current.focus();
+    }
+    ...
+}
+```
+
+- on the name `<input>` add `ref` property assign it with `this.nameInput`.
+
+```jsx
+/* src/users/components/EditUser.js */
+class EditUser extends React.Component {
+    render() {
+        ...
+        <input ref={this.nameInput} type="text" name="username" className="form-control" id="username"
+        ...
+    }
+}
 ```
