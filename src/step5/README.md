@@ -444,3 +444,267 @@ class EditUser extends React.Component {
 export default Logger(EditUser,'edit user');
 
 ```
+
+## Context
+
+- create new file `theme.context.js` in `src/contexts`
+- import `React`, create `themes` object and create `ThemeContext` const
+- assign `ThemeContext` with `React.createContext` and call to object that contain `theme` as theme and `toggleTheme` as function.
+
+```jsx
+/* src/contexts/theme.context.js */
+import React from 'react'
+export const themes = {
+    light: {
+        background: '#eeeeee',
+        color: '#222222',
+    },
+    dark: {
+        background: '#222222',
+        color: '#eeeeee',
+    },
+};
+const ThemeContext = React.createContext({
+    theme: themes.dark,
+    toggleTheme: () => { },
+});
+
+export default ThemeContext;
+```
+
+- create new file `ThemeToggleChange.js` in `src/features/component` folder
+- import `React` and `ThemeContext, { themes }` from `theme.context.js`
+
+```jsx
+import React from 'react'
+import ThemeContext, { themes } from '../../contexts/theme.context';
+
+export default () => {
+    return (
+        <div></div>
+    )
+}
+
+```
+
+- return `<ThemeContext.Consumer>` and inside call to JSX expression function that get `{ theme, toggleTheme }` object in the argument.
+- return a toggle buttons that call to `toggleTheme`
+
+```jsx
+import React from 'react'
+import ThemeContext, { themes } from '../../contexts/theme.context';
+
+export default () => {
+    return (
+        <ThemeContext.Consumer>
+            {({ theme, toggleTheme }) => (
+                <div class="btn-group" role="group">
+                    <button type="button" className={"btn btn-" + (theme === themes.light ? 'primary' : '')} onClick={toggleTheme}>Light</button>
+                    <button type="button" className={"btn btn-" + (theme === themes.dark ? 'primary' : '')} onClick={toggleTheme}>Dark</button>
+                </div>
+            )}
+        </ThemeContext.Consumer>
+    )
+}
+```
+
+> the component can return just one `<button>` that toggle the theme.
+
+- in the `App` component import `ThemeToggleChange` and `ThemeContext, { themes }`
+
+```jsx
+/* src/App.js */
+...
+import ThemeToggleChange from './features/components/ThemeToggleChange';
+import ThemeContext, { themes } from './contexts/theme.context';
+export default class App extends Component {
+...
+}
+```
+
+- create new function in the class `toggleTheme`
+- the function `setState` of the `theme` base on the previous theme on the `oldState`.
+
+```jsx
+/* src/App.js */
+...
+export default class App extends Component {
+    toggleTheme = () => {
+        this.setState(state => ({
+            theme:
+                state.theme === themes.dark
+                    ? themes.light
+                    : themes.dark,
+        }));
+    };
+}
+```
+
+- in the constructor add to `this.state` `theme` and `toggleTheme`
+- the `theme`  is the default theme and the `toggleTheme` is `this.toggleTheme`
+
+```diff
+/* src/App.js */
+...
+export default class App extends Component {
+    constructor() {
+        super();
+        this.state = {
+            users: [],
+            startIndex: 0,
+            inPage: 3,
++            theme: themes.light,
++            toggleTheme: this.toggleTheme,
+        }
+    }
+}
+```
+
+- on the render function create new `themeContextObj` the contain `theme` and `toggleTheme` from `this.state`
+
+```diff
+/* src/App.js */
+...
+export default class App extends Component {
+    render() {
+        let style = {
+            width: '600px',
+            margin: `10px auto`
+        }
+        let editUser = ''
+        if (this.state.editUser) {
+            editUser = <EditUser {...this.state.editUser}
+                save={this.saveEditUser}
+                onChange={this.editUserChange} />
+        }
++        const themeContextObj = {
++            theme: this.state.theme,
++            toggleTheme: this.state.toggleTheme
++        }
+        return (
+            ...
+        );
+    }
+}
+```
+
+```jsx
+/* src/App.js */
+...
+export default class App extends Component {
+    render() {
+
+        const themeContextObj = {
+            theme: this.state.theme,
+            toggleTheme: this.state.toggleTheme
+        }
+        return (
+            ...
+        );
+    }
+}
+```
+
+- wrap the return JSX element with `<ThemeContext.Provider value={themeContextObj}>` and add `<ThemeToggleChange />`
+after the `<h1>` element
+
+```diff
+/* src/App.js */
+...
+export default class App extends Component {
+    render() {
+        ...
+        const themeContextObj = {
+            theme: this.state.theme,
+            toggleTheme: this.state.toggleTheme
+        }
+        return (
++            <ThemeContext.Provider value={themeContextObj}>
+                <div style={style}>
+                    <h1> User Admin </h1>
++                    <ThemeToggleChange />
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-8 list-group">
+                            <ul className="list-group">
+                                <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
+                                    {this.state.users
+                                        .map((u) => {
+                                            u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
+                                            return u
+                                        })
+                                        .map((u) => (
+                                            <li key={u.id}
+                                                onClick={this.selectUser.bind(this, u.id)}
+                                                className={"list-group-item " + u.active}
+                                            >
+                                                <User {...u} />
+                                            </li>
+                                        ))}
+                                </Pagination>
+                            </ul>
+                        </div>
+                        <div className={'col-xs-12 col-sm-4'}>
+                            {editUser}
+                        </div>
+                    </div>
+                </div>
++            </ThemeContext.Provider>
+        )
+    }
+}
+```
+
+```jsx
+/* src/App.js */
+...
+export default class App extends Component {
+   render() {
+        let style = {
+            width: '600px',
+            margin: `10px auto`
+        }
+        let editUser = ''
+        if (this.state.editUser) {
+            editUser = <EditUser {...this.state.editUser}
+                save={this.saveEditUser}
+                onChange={this.editUserChange} />
+        }
+        const themeContextObj = {
+            theme: this.state.theme,
+            toggleTheme: this.state.toggleTheme
+        }
+        return (
+            <ThemeContext.Provider value={themeContextObj}>
+                <div style={style}>
+                    <h1> User Admin </h1>
+                    <ThemeToggleChange />
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-8 list-group">
+                            <ul className="list-group">
+                                <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
+                                    {this.state.users
+                                        .map((u) => {
+                                            u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
+                                            return u
+                                        })
+                                        .map((u) => (
+                                            <li key={u.id}
+                                                onClick={this.selectUser.bind(this, u.id)}
+                                                className={"list-group-item " + u.active}
+                                            >
+                                                <User {...u} />
+                                            </li>
+                                        ))}
+                                </Pagination>
+                            </ul>
+                        </div>
+                        <div className={'col-xs-12 col-sm-4'}>
+                            {editUser}
+                        </div>
+                    </div>
+                </div>
+            </ThemeContext.Provider>
+        )
+    }
+}
+```

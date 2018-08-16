@@ -4,6 +4,8 @@ import Pagination from './users/components/Pagination';
 import EditUser from './users/components/EditUser';
 import UsersApi from './api/users'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import ThemeToggleChange from './features/components/ThemeToggleChange';
+import ThemeContext, { themes } from './contexts/theme.context';
 export default class App extends Component {
     constructor() {
         super();
@@ -11,6 +13,8 @@ export default class App extends Component {
             users: [],
             startIndex: 0,
             inPage: 3,
+            theme: themes.light,
+            toggleTheme: this.toggleTheme,
         }
     }
     async componentDidMount() {
@@ -30,8 +34,8 @@ export default class App extends Component {
     saveEditUser = async () => {
         let editUser = await UsersApi.updateUser(this.state.editUser);
         this.setState((oldState) => ({
-                editUser,
-                users: oldState.users.map((u) => u.id !== editUser.id ? u : editUser)
+            editUser,
+            users: oldState.users.map((u) => u.id !== editUser.id ? u : editUser)
         }))
     }
     editUserChange = (e) => {
@@ -53,6 +57,14 @@ export default class App extends Component {
             editUser: null
         })
     }
+    toggleTheme = () => {
+        this.setState(oldState => ({
+            theme:
+                oldState.theme === themes.dark
+                    ? themes.light
+                    : themes.dark,
+        }));
+    };
     render() {
         let style = {
             width: '600px',
@@ -64,9 +76,15 @@ export default class App extends Component {
                 save={this.saveEditUser}
                 onChange={this.editUserChange} />
         }
+        const themeContextObj = {
+            theme: this.state.theme,
+            toggleTheme: this.state.toggleTheme
+        }
         return (
+            <ThemeContext.Provider value={themeContextObj}>
                 <div style={style}>
                     <h1> User Admin </h1>
+                    <ThemeToggleChange />
                     <div className="row">
                         <div className="col-xs-12 col-sm-8 list-group">
                             <ul className="list-group">
@@ -92,6 +110,7 @@ export default class App extends Component {
                         </div>
                     </div>
                 </div>
+            </ThemeContext.Provider>
         )
     }
 }
