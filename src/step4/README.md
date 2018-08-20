@@ -41,7 +41,7 @@ const UsersApi = {
 const USER_API = 'http://local.directv.com:3001/users'
 const UsersApi = {
     async updateUser(user) {
-        return await await fetch(USER_API + '/' + user.id, {
+        return await fetch(USER_API + '/' + user.id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
