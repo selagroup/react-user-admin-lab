@@ -708,3 +708,179 @@ export default class App extends Component {
     }
 }
 ```
+
+- go to `src/user/styles/item.css` and remove the `background` and `color` properties.
+
+```diff
+.item {
+    width: auto;
+    border-radius: 10px;
+    border: solid 1px lightgray;
+    padding: 10px;
+-    background: whitesmoke;
+-    color:black;
+}
+```
+
+```css
+.item {
+    width: auto;
+    border-radius: 10px;
+    border: solid 1px lightgray;
+    padding: 10px;
+    background: whitesmoke;
+    color:black;
+}
+```
+
+## Theme HOC
+
+- create new file `ApplyTheme.js` on `src/hoc` folder
+- import `React`
+- on that file `export default` function that get `WrappedComponent` as argument and return a function with argument of spread `props` and return the `WrappedComponent` withe the spread `props`
+
+```jsx
+/* src/hoc/ApplyTheme.js */
+import React from 'react'
+
+export default (WrappedComponent) => {
+    return ({ ...props }) => (
+        <WrappedComponent {...props} />
+    )
+}
+```
+
+- import `ThemeContext` from `theme.context` and wrap the `WrappedComponent` with `<ThemeContext.Consumer>` and inside call JSX expression with function that get `obj` as argument.
+- wrap the `<WrappedComponent>` again but this time with `<div>` element with `style` attribute that assign with `obj.theme` as JSX expression.
+
+```diff
+import React from 'react'
+import ThemeContext from './../contexts/theme.context';
+
+export default (WrappedComponent) => {
+    return ({ ...props }) => (
++        <ThemeContext.Consumer>
++            {(obj) => (
++              <div style={obj.theme}>
+                <WrappedComponent {...props} />
++            </div>
++            )}
++      </ThemeContext.Consumer>
+    )
+}
+```
+
+```jsx
+/* src/hoc/ApplyTheme.js */
+import React from 'react'
+import ThemeContext from './../contexts/theme.context';
+
+export default (WrappedComponent) => {
+    return ({ ...props }) => (
+        <ThemeContext.Consumer>
+            {(obj) => (
+              <div style={obj.theme}>
+                <WrappedComponent {...props} />
+            </div>
+            )}
+      </ThemeContext.Consumer>
+    )
+}
+```
+
+- import `ApplyTheme` to `EditUser` and `User` components and `export default` the component wrap in the HOC `ApplyTheme`
+
+```diff
+/* src/users/components/EditUser.js */
+
+import React from 'react'
+import PropTypes from 'prop-types'
+import Logger from '../../hoc/Logger';
++ import ApplyTheme from '../../hoc/ApplyTheme';
+import '../styles/item.css';
+class EditUser extends React.Component {
+...
+}
+-export default Logger(EditUser,'edit user');
++export default ApplyTheme(Logger(EditUser,'edit user'));
+
+
+```
+
+```jsx
+/* src/users/components/EditUser.js */
+
+import React from 'react'
+import PropTypes from 'prop-types'
+import Logger from '../../hoc/Logger';
+import ApplyTheme from '../../hoc/ApplyTheme';
+import '../styles/item.css';
+class EditUser extends React.Component {
+...
+}
+export default ApplyTheme(Logger(EditUser,'edit user'));
+
+```
+
+```diff
+/* src/users/components/User.js */
+
+import React from 'react'
+import PropTypes from 'prop-types';
+import '../styles/item.css'
++import ApplyTheme from '../../hoc/ApplyTheme';
+-export default function User(props) {
++function User(props) {
+    return (
+        <div className="item">
+            <div>
+                id: {props.id}
+            </div>
+            <div>
+                username: {props.username}
+            </div>
+            <div>
+                email: {props.email}
+            </div>
+        </div>
+    )
+}
+User.propTypes = {
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+}
++export default ApplyTheme(User);
+```
+
+```jsx
+/* src/users/components/User.js */
+
+import React from 'react'
+import PropTypes from 'prop-types';
+import '../styles/item.css'
+import ApplyTheme from '../../hoc/ApplyTheme';
+export default function User(props) {
+function User(props) {
+    return (
+        <div className="item">
+            <div>
+                id: {props.id}
+            </div>
+            <div>
+                username: {props.username}
+            </div>
+            <div>
+                email: {props.email}
+            </div>
+        </div>
+    )
+}
+User.propTypes = {
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+}
+export default ApplyTheme(User);
+
+```

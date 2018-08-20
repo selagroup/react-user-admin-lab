@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Logger from '../../hoc/Logger';
+import ApplyTheme from '../../hoc/ApplyTheme';
 import '../styles/item.css';
 class EditUser extends React.Component {
 
@@ -47,7 +48,7 @@ class EditUser extends React.Component {
         )
     }
 }
-export default Logger(EditUser,'edit user');
+export default ApplyTheme(Logger(EditUser,'edit user'));
 
 
 EditUser.propTypes = {

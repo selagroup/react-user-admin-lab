@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import '../styles/item.css'
-export default function User(props) {
+import ApplyTheme from '../../hoc/ApplyTheme';
+function User(props) {
     return (
         <div className="item">
             <div>
@@ -21,3 +22,4 @@ User.propTypes = {
     username: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
 }
+export default ApplyTheme(User);
