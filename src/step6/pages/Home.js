@@ -26,28 +26,28 @@ export default class Home extends Component {
     }
     render() {
         return (
-            
-                <div className="col-sm-12 list-group">
-                    <ul className="list-group">
-                        <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
-                            {this.state.users
-                                .map((u) => {
-                                    u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
-                                    return u
-                                })
-                                .map((u) => (
-                                    <li key={u.id}
-                                        className={"list-group-item " + u.active}
-                                    >
-                                        <Link to={"/user/" + u.id}>
-                                            <User {...u} />
-                                        </Link>
 
-                                    </li>
-                                ))}
-                        </Pagination>
-                    </ul>
-                </div>
+            <div className="col-sm-12 list-group">
+                <ul className="list-group">
+                    <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
+                        {this.state.users
+                            .map((u) => {
+                                u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
+                                return u
+                            })
+                            .map((u) => (
+                                <li key={u.id}
+                                    className={"list-group-item " + u.active}
+                                >
+                                    <Link to={"/user/" + u.id}>
+                                        <User {...u} />
+                                    </Link>
+
+                                </li>
+                            ))}
+                    </Pagination>
+                </ul>
+            </div>
         )
     }
 }

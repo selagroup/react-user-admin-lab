@@ -414,10 +414,10 @@ export default withRouter(UserDetails);
 
 ## create Home page
 
-- create new folder `pages` and in there create new file `Home.js`
+- on `pages` folder create new file `Home.js`
 - copy the content in `src/App.js` to `src/pages/Home.js`
 - in the `Home` page change the class name form `App` to `Home`
-- remove all of the `ThemeContext` references in the `Home` page.
+- remove all of the `ThemeContext` and `EditUser` references in the `Home` page.
 > don't forget to change the location of the `import from`
 
 ```diff
@@ -452,34 +452,34 @@ import React, { Component } from 'react'
             users
         })
     }
-    selectUser = (id) => {
-        this.setState((oldState) => {
-            const editUser = { ...oldState.users.find((u) => id === u.id) };
-            return {
-                editUser
-            }
-        })
-    }
-    saveEditUser = async () => {
-        let editUser = await UsersApi.updateUser(this.state.editUser);
-        this.setState((oldState) => ({
-            editUser,
-            users: oldState.users.map((u) => u.id !== editUser.id ? u : editUser)
-        }))
-    }
-    editUserChange = (e) => {
-        let editUser = {
-            [e.target.name]: e.target.value
-        }
-        this.setState((oldState) => {
-            return {
-                editUser: {
-                    ...oldState.editUser,
-                    ...editUser,
-                }
-            }
-        })
-    }
+-    selectUser = (id) => {
+-        this.setState((oldState) => {
+-            const editUser = { ...oldState.users.find((u) => id === u.id) };
+-            return {
+-                editUser
+-            }
+-        })
+-    }
+-    saveEditUser = async () => {
+-        let editUser = await UsersApi.updateUser(this.state.editUser);
+-        this.setState((oldState) => ({
+-            editUser,
+-            users: oldState.users.map((u) => u.id !== editUser.id ? u : editUser)
+-        }))
+-    }
+-    editUserChange = (e) => {
+-        let editUser = {
+-            [e.target.name]: e.target.value
+-        }
+-        this.setState((oldState) => {
+-            return {
+-                editUser: {
+-                    ...oldState.editUser,
+-                    ...editUser,
+-                }
+-            }
+-        })
+-    }
     nextPage = (e) => {
         this.setState({
             startIndex: e.startIndex,
@@ -499,12 +499,12 @@ import React, { Component } from 'react'
 -            width: '600px',
 -            margin: `10px auto`
 -        }
-        let editUser = ''
-        if (this.state.editUser) {
-            editUser = <EditUser {...this.state.editUser}
-                save={this.saveEditUser}
-                onChange={this.editUserChange} />
-        }
+-        let editUser = ''
+-        if (this.state.editUser) {
+-            editUser = <EditUser {...this.state.editUser}
+-                save={this.saveEditUser}
+-                onChange={this.editUserChange} />
+-        }
 -        const themeContextObj = {
 -            theme: this.state.theme,
 -            toggleTheme: this.state.toggleTheme
@@ -515,7 +515,8 @@ import React, { Component } from 'react'
 -                    <h1> User Admin </h1>
 -                    <ThemeToggleChange />
                     <div className="row">
-                        <div className="col-xs-12 col-sm-8 list-group">
+-                        <div className="col-xs-12 col-sm-8 list-group">
++                        <div className="col-sm-12 list-group">
                             <ul className="list-group">
                                 <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
                                     {this.state.users
@@ -534,9 +535,9 @@ import React, { Component } from 'react'
                                 </Pagination>
                             </ul>
                         </div>
-                        <div className={'col-xs-12 col-sm-4'}>
-                            {editUser}
-                        </div>
+-                        <div className={'col-xs-12 col-sm-4'}>
+-                            {editUser}
+-                        </div>
                     </div>
 -                </div>
 -            </ThemeContext.Provider>
@@ -551,7 +552,6 @@ import React, { Component } from 'react'
 import React, { Component } from 'react'
 import User from '../users/components/User'
 import Pagination from '../users/components/Pagination';
-import EditUser from '../users/components/EditUser';
 import UsersApi from '../api/users'
 export default class Home extends Component {
     constructor() {
@@ -568,34 +568,6 @@ export default class Home extends Component {
             users
         })
     }
-    selectUser = (id) => {
-        this.setState((oldState) => {
-            const editUser = { ...oldState.users.find((u) => id === u.id) };
-            return {
-                editUser
-            }
-        })
-    }
-    saveEditUser = async () => {
-        let editUser = await UsersApi.updateUser(this.state.editUser);
-        this.setState((oldState) => ({
-            editUser,
-            users: oldState.users.map((u) => u.id !== editUser.id ? u : editUser)
-        }))
-    }
-    editUserChange = (e) => {
-        let editUser = {
-            [e.target.name]: e.target.value
-        }
-        this.setState((oldState) => {
-            return {
-                editUser: {
-                    ...oldState.editUser,
-                    ...editUser,
-                }
-            }
-        })
-    }
     nextPage = (e) => {
         this.setState({
             startIndex: e.startIndex,
@@ -603,42 +575,106 @@ export default class Home extends Component {
         })
     }
     render() {
-        let editUser = ''
-        if (this.state.editUser) {
-            editUser = <EditUser {...this.state.editUser}
-                save={this.saveEditUser}
-                onChange={this.editUserChange} />
-        }
         return (
-            <div className="row">
-                <div className="col-xs-12 col-sm-8 list-group">
-                    <ul className="list-group">
-                        <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
-                            {this.state.users
-                                .map((u) => {
-                                    u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
-                                    return u
-                                })
-                                .map((u) => (
-                                    <li key={u.id}
-                                        onClick={this.selectUser.bind(this, u.id)}
-                                        className={"list-group-item " + u.active}
-                                    >
+
+            <div className="col-sm-12 list-group">
+                <ul className="list-group">
+                    <Pagination inPage={this.state.inPage} startIndex={this.state.startIndex} nextPage={this.nextPage}>
+                        {this.state.users
+                            .map((u) => {
+                                u.active = (this.state.editUser ? u.id === this.state.editUser.id ? 'active' : '' : '')
+                                return u
+                            })
+                            .map((u) => (
+                                <li key={u.id}
+                                    onClick={this.selectUser.bind(this, u.id)}
+                                    className={"list-group-item " + u.active}
+                                >
                                         <User {...u} />
-                                    </li>
-                                ))}
-                        </Pagination>
-                    </ul>
-                </div>
-                <div className={'col-xs-12 col-sm-4'}>
-                    {editUser}
-                </div>
+                                </li>
+                            ))}
+                    </Pagination>
+                </ul>
             </div>
         )
     }
 }
 
+
 ```
+
+- import `Link` from react-router-dom
+
+```diff
+/* src/pages/Home.js */
+...
+import UsersApi from '../api/users'
++import { Link } from 'react-router-dom';
+export default class Home extends Component {
+    ...
+}
+```
+
+```jsx
+/* src/pages/Home.js */
+...
+import UsersApi from '../api/users'
+import { Link } from 'react-router-dom';
+export default class Home extends Component {
+    ...
+}
+```
+
+- in the `li` element remove the `onClick` and wrap the `<User>` element with `Link`
+
+```diff
+/* src/pages/Home.js */
+export default class Home extends Component {
+    ...
+    render(){
+        return (
+            <div className="col-sm-12 list-group">
+                <ul className="list-group">
+                ...
+                    <li key={u.id}
+-                        onClick={this.selectUser.bind(this, u.id)}
+                        className={"list-group-item " + u.active}
+                    >
++                        <Link to={"/user/" + u.id}>
+                            <User {...u} />
++                        </Link>
+                    </li>
+                ...
+                </ul>
+           </div>
+        )
+    }
+```
+
+```jsx
+/* src/pages/Home.js */
+export default class Home extends Component {
+    ...
+    render(){
+        return (
+            <div className="col-sm-12 list-group">
+                <ul className="list-group">
+                ...
+                    <li key={u.id}
+                        className={"list-group-item " + u.active}
+                    >
+                        <Link to={"/user/" + u.id}>
+                            <User {...u} />
+                        </Link>
+                    </li>
+                ...
+                </ul>
+           </div>
+        )
+    }
+```
+
+## create the router SWITCH
 
 - in the `App` component remove all of the users references.
 - import `Home` page and on the `render` function declare `<Home>` component.
