@@ -677,7 +677,7 @@ export default class Home extends Component {
 ## create the router SWITCH
 
 - in the `App` component remove all of the users references.
-- import `Home` page and on the `render` function declare `<Home>` component.
+
 
 ```diff
 /* src/App.js */
@@ -686,7 +686,6 @@ import React, { Component } from 'react'
 -import Pagination from './users/components/Pagination';
 -import EditUser from './users/components/EditUser';
 -import UsersApi from './api/users'
-+import Home from './pages/Home'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ThemeToggleChange from './features/components/ThemeToggleChange';
 import ThemeContext, { themes } from './contexts/theme.context';
@@ -793,7 +792,6 @@ export default class App extends Component {
 -                            {editUser}
 -                        </div>
 -                    </div>
-+                <Home/>
                 </div>
             </ThemeContext.Provider>
         )
@@ -839,8 +837,138 @@ export default class App extends Component {
                 <div style={style}>
                     <h1> User Admin </h1>
                     <ThemeToggleChange />
-                    <Home/>
                  </div>
+            </ThemeContext.Provider>
+        )
+    }
+}
+```
+
+- import `Home` and `UserDetails` pages and `BrowserRouter`, `Route`, `NavLink` and  `Switch` from 'react-router-dom'
+
+```jsx
+/* src/App.js */
+import React, { Component } from 'react'
+import Home from './pages/Home'
+import UserDetails from './pages/UserDetails'
+import { BrowserRouter, Route, NavLink, Switch } from 'react-router-dom';
+```
+
+- on the render function, wrap the main div with `<BrowserRouter>`
+
+```diff
+/* src/App.js */
+...
+export default class App extends Component {
+    render() {
+        let style = {
+            width: '600px',
+            margin: `10px auto`
+        }
+        const themeContextObj = {
+            theme: this.state.theme,
+            toggleTheme: this.state.toggleTheme
+        }
+        return (
+            <ThemeContext.Provider value={themeContextObj}>
++                <BrowserRouter>
+                    <div style={style}>
+                    <h1> User Admin </h1>
+                    ...
+                    </div>
++                </BrowserRouter>
+            </ThemeContext.Provider>
+        )
+    }
+}
+```
+
+```jsx
+/* src/App.js */
+...
+export default class App extends Component {
+    render() {
+        let style = {
+            width: '600px',
+            margin: `10px auto`
+        }
+        const themeContextObj = {
+            theme: this.state.theme,
+            toggleTheme: this.state.toggleTheme
+        }
+        return (
+            <ThemeContext.Provider value={themeContextObj}>
+                <BrowserRouter>
+                    <div style={style}>
+                    ...
+                    </div>
+                </BrowserRouter>
+            </ThemeContext.Provider>
+        )
+    }
+}
+```
+
+- create `<Switch>` element inside the main `<div>`
+- in that `<Switch>` element create `<Route>` elements that route to:
+  - `exact path="/" component={Home}`
+  - `exact path="/user/create" component={UserDetails}`
+  - `path="/user/:id" component={UserDetails}`
+  - `render={() => <h2> Page not found!</h2>}`
+
+```jsx
+/* src/App.js */
+...
+export default class App extends Component {
+    render() {
+        return (
+            <ThemeContext.Provider value={themeContextObj}>
+                <BrowserRouter>
+                    <div style={style}>
+                        <Switch>
+                            <Route exact path="/" component={Home} />
+                            <Route exact path="/user/create" component={UserDetails} />
+                            <Route path="/user/:id" component={UserDetails} />
+                            <Route render={() => <h2> Page not found!</h2>} />
+                        </Switch>
+                    </div>
+                </BrowserRouter>
+            </ThemeContext.Provider>
+        )
+    }
+}
+```
+
+- create `<nav>` element that `<NavLink>` to `Home` and `Create` pages
+
+```jsx
+export default class App extends Component {
+    render() {
+        return (
+            <ThemeContext.Provider value={themeContextObj}>
+                <BrowserRouter>
+                    <nav className="navbar navbar-expand-sm bg-light">
+                            <ul className="navbar-nav mr-auto">
+                                <li className="nav-item">
+                                    <span className="nav-link"><NavLink to="/" exact >Home</NavLink></span>
+                                </li>
+                                <li className="nav-item">
+                                    <span className="nav-link"><NavLink to="/user/create" exact >Create</NavLink></span>
+                                </li>
+                            </ul>
+                            <ul className="navbar-nav">
+                                <ThemeToggleChange />
+                            </ul>
+                    </nav>
+                    <div style={style}>
+                        <Switch>
+                            <Route exact path="/" component={Home} />
+                            <Route exact path="/user/create" component={UserDetails} />
+                            <Route path="/user/:id" component={UserDetails} />
+                            <Route render={() => <h2> Page not found!</h2>} />
+                        </Switch>
+                    </div>
+                </BrowserRouter>
             </ThemeContext.Provider>
         )
     }
