@@ -352,9 +352,11 @@ class UserDetails extends Component {
     }
 
     async componentDidMount() {
-        this.setState({
-            user: await UsersApi.getUserById(this.props.match.params.id)
-        })
+        if (this.props.match.params.id) {
+            this.setState({
+                user: await UsersApi.getUserById(this.props.match.params.id)
+            })
+        }
     }
     updateUser = async () => {
         await UsersApi.updateUser(this.state.user);
@@ -364,6 +366,11 @@ class UserDetails extends Component {
     deleteUser = async () => {
         await UsersApi.deleteUser(this.state.user.id);
         this.props.history.push('/')
+    }
+    createUser = async () => {
+        await UsersApi.createUser(this.state.user);
+        this.props.history.push('/')
+
     }
     userChange = (e) => {
         let user = {
@@ -379,7 +386,14 @@ class UserDetails extends Component {
         })
     }
     render() {
-        if (this.state.user) {
+        if (!this.props.match.params.id) {
+            return (
+                <EditUser
+                    save={this.createUser}
+                    onChange={this.userChange} />
+            )
+        }
+        else if (this.state.user) {
             return (
                 <EditUser {...this.state.user}
                     save={this.updateUser}
@@ -395,6 +409,7 @@ class UserDetails extends Component {
 }
 
 export default withRouter(UserDetails);
+
 ```
 
 ## create Home page
@@ -795,8 +810,3 @@ export default class App extends Component {
     }
 }
 ```
-
-## create UserDetails page
-
-- create new file `UserDetails.js` on `src/pages` folder
-- in that file create new class component name `UserDetails`.
