@@ -45,6 +45,134 @@ const UsersApi = {
 }
 ```
 
+## create UserDetail page
+
+- create new file `UserDetail.js` in `src/pages`
+- import `React`, `EditUser`, `UserApi` and `{ withRoute }`.
+
+```jsx
+/* src/pages/UserDetails.js */
+import React, { Component } from 'react'
+import EditUser from '../users/components/EditUser';
+import UsersApi from '../api/users';
+import { withRouter } from 'react-router-dom';
+```
+
+- create new class component `UserDetails`
+
+```jsx
+/* src/pages/UserDetails.js */
+class UserDetails extends Component {
+}
+```
+
+- in the class `constructor` assign `this.state` with new property `userRequested:false`
+
+```jsx
+/* src/pages/UserDetails.js */
+class UserDetails extends Component {
+    constructor() {
+        super()
+        this.state = {
+            userRequested: false
+        }
+    }
+}
+```
+
+- create `async componentDidMount` function and on it call to `this.setState` with `user` property that `await` to `UsersApi.getUserById` with `this.props.match.params.id` as argument.
+
+```jsx
+/* src/pages/UserDetails.js */
+class UserDetails extends Component {
+    async componentDidMount() {
+        this.setState({
+            user: await UsersApi.getUserById(this.props.match.params.id)
+        })
+    }
+}
+```
+
+- create `updateUser` and `deleteUser` functions that `async await` to `UsersApi.updateUser` and `UsersApi.deleteUser`, and when responded call to `this.props.history.push('/')`
+
+```jsx
+/* src/pages/UserDetails.js */
+class UserDetails extends Component {
+    ...
+    updateUser = async () => {
+        await UsersApi.updateUser(this.state.user);
+        this.props.history.push('/')
+
+    }
+    deleteUser = async () => {
+        await UsersApi.deleteUser(this.state.user.id);
+        this.props.history.push('/')
+    }
+    ...
+}
+```
+
+- create `userChange` function that get `e` as argument and just like `editUserChange` in `App` component `setState` to the `user` (instead of the `editUser` in `App` component)
+
+```jsx
+/* src/pages/UserDetails.js */
+class UserDetails extends Component {
+    ...
+    userChange = (e) => {
+        let user = {
+            [e.target.name]: e.target.value
+        }
+        this.setState((oldState) => {
+            return {
+                user: {
+                    ...oldState.user,
+                    ...user,
+                }
+            }
+        })
+    }
+    ...
+}
+```
+
+- on the `render` function check if there is `this.state.user` if so return `<EditUser>` component with:
+  - the spread `this.state.user`
+  - `save` with `this.updateUser`
+  - `delete` with `this.deleteUser`
+  - `onChange` with `this.userChange`
+- if there aren't `this.state.user` check the `this.state.userRequested`, if `true` return text that the `id` didn't found.
+- it the `this.state.user` isn't set and the `this.state.userRequested` `true` the return text the the user is fetching from the server.
+
+```jsx
+/* src/pages/UserDetails.js */
+class UserDetails extends Component {
+    ...
+    render() {
+        if (this.state.user) {
+            return (
+                <EditUser {...this.state.user}
+                    save={this.updateUser}
+                    delete={this.deleteUser}
+                    onChange={this.userChange} />)
+        } else if (this.state.userRequested) {
+            return <h2> User id: {this.props.match.params.id} not found</h2>
+        }
+        else {
+            return <h2> getting user data</h2>
+        }
+    }
+}
+```
+
+- `export default` the `UserDetails` wrap with `withRouter` HOC.
+
+```jsx
+/* src/pages/UserDetails.js */
+class UserDetails extends Component {
+...
+}
+export default withRouter(UserDetails);
+```
 
 ## create Home page
 
