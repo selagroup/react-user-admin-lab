@@ -48,7 +48,34 @@ const UsersApi = {
             body: JSON.stringify(user),
         })
             .then((res) => res.json())
-            // .then((resUser) => new Promise((res) => setTimeout(() => res(resUser), 5000)));
-    }
+        // .then((resUser) => new Promise((res) => setTimeout(() => res(resUser), 5000)));
+    },
+    async deleteUser(id) {
+        return await fetch(USER_API + '/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then((res) => res.json())
+        // .then((resUser) => new Promise((res) => setTimeout(() => res(resUser), 5000)));
+    },
+    async createUser(user) {
+
+        return await fetch(USER_API, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user),
+        })
+            .then((res) => res.json())
+        // .then((resUser) => new Promise((res) => setTimeout(() => res(resUser), 5000)));
+    },
+    async getUserById(id) {
+        return await fetch(USER_API + '/' + id)
+            .then(res => res.status === 404 ? void 0 : res.json())
+
+    },
 }
 export default UsersApi

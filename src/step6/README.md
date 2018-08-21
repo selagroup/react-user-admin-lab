@@ -3,6 +3,49 @@
 - install `react-router-dom`
 > `npm install react-router-dom`
 
+## new user apis
+
+- go to the `UserApi` object in `src/api/user.js` file and create 3 new function:
+    1. `deleteUser` - get `id` as argument and call `USER_API/<id>` with `DELETE` method to delete the user
+    2. `createUser` - get `user` as argument and call `USER_API` with `POST` method and the `user` in the `body` to create new user
+    3. `getUserById` - get `id` as argument and call `USER_API/<id>` with `GET` method to get a specific user data
+        - > note: in the `getUserById` check if the response is `404` and if so return `undefined`.
+
+```js
+const UsersApi = {
+    ...
+    },
+    async deleteUser(id) {
+        return await fetch(USER_API + '/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then((res) => res.json())
+        // .then((resUser) => new Promise((res) => setTimeout(() => res(resUser), 5000)));
+    },
+    async createUser(user) {
+
+        return await fetch(USER_API, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user),
+        })
+            .then((res) => res.json())
+        // .then((resUser) => new Promise((res) => setTimeout(() => res(resUser), 5000)));
+    },
+    async getUserById(id) {
+        return await fetch(USER_API + '/' + id)
+            .then(res => res.status === 404 ? void 0 : res.json())
+
+    }
+}
+```
+
+
 ## create Home page
 
 - create new folder `pages` and in there create new file `Home.js`
@@ -401,3 +444,8 @@ export default class App extends Component {
     }
 }
 ```
+
+## create UserDetails page
+
+- create new file `UserDetails.js` on `src/pages` folder
+- in that file create new class component name `UserDetails`.
