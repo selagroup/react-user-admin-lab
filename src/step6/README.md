@@ -222,20 +222,22 @@ class UserDetails extends Component {
 }
 ```
 
-- create `async componentDidMount` function and on it call to `this.setState` with `user` property that `await` to `UsersApi.getUserById` with `this.props.match.params.id` as argument.
+- create `async componentDidMount` function and on it check if `this.props.match.params.id`, if so call to `this.setState` with `user` property that `await` to `UsersApi.getUserById` with `this.props.match.params.id` as argument.
 
 ```jsx
 /* src/pages/UserDetails.js */
 class UserDetails extends Component {
     async componentDidMount() {
-        this.setState({
-            user: await UsersApi.getUserById(this.props.match.params.id)
-        })
+        if (this.props.match.params.id){
+            this.setState({
+                user: await UsersApi.getUserById(this.props.match.params.id)
+            })
+        }
     }
 }
 ```
 
-- create `updateUser` and `deleteUser` functions that `async await` to `UsersApi.updateUser` and `UsersApi.deleteUser`, and when responded call to `this.props.history.push('/')`
+- create `updateUser`, `deleteUser` and `createUser` functions that `async await` to `UsersApi.updateUser`, `UsersApi.deleteUser` and `UserApi.createUser`. when the response arrived call `this.props.history.push('/')`
 
 ```jsx
 /* src/pages/UserDetails.js */
@@ -249,6 +251,11 @@ class UserDetails extends Component {
     deleteUser = async () => {
         await UsersApi.deleteUser(this.state.user.id);
         this.props.history.push('/')
+    }
+    createUser = async () => {
+        await UsersApi.createUser(this.state.user);
+        this.props.history.push('/')
+
     }
     ...
 }
@@ -277,20 +284,31 @@ class UserDetails extends Component {
 }
 ```
 
-- on the `render` function check if there is `this.state.user` if so return `<EditUser>` component with:
-  - the spread `this.state.user`
-  - `save` with `this.updateUser`
-  - `delete` with `this.deleteUser`
-  - `onChange` with `this.userChange`
-- if there aren't `this.state.user` check the `this.state.userRequested`, if `true` return text that the `id` didn't found.
-- it the `this.state.user` isn't set and the `this.state.userRequested` `true` the return text the the user is fetching from the server.
+- on the `render` function check:
+  - if `!this.props.match.params.id === true` return `<EditUser>` component with:
+    - `save` with `this.createUser`
+    - `onChange` with `this.userChange`
+  - if is `this.state.user` return `<EditUser>` component with:
+    - the spread `this.state.user`
+    - `save` with `this.updateUser`
+    - `delete` with `this.deleteUser`
+    - `onChange` with `this.userChange`
+  - if `this.state.userRequested` return text that the `id` didn't found.
+  - else return text the the user is fetching data from the server.
 
 ```jsx
 /* src/pages/UserDetails.js */
 class UserDetails extends Component {
     ...
     render() {
-        if (this.state.user) {
+        if (!this.props.match.params.id) {
+            return (
+                <EditUser
+                    save={this.createUser}
+                    onChange={this.userChange} />
+            )
+        }
+        else if (this.state.user) {
             return (
                 <EditUser {...this.state.user}
                     save={this.updateUser}
