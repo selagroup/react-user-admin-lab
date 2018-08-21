@@ -27,7 +27,13 @@ class EditUser extends React.Component {
     render() {
         return (
             <form onSubmit={this.onSubmit} className="item">
-                <legend>Edit User id:{this.props.id}</legend>
+                <legend>
+                    {this.props.id ? (
+                        <React.Fragment>Edit User id:{this.props.id}</React.Fragment>
+                    ) : (
+                            <React.Fragment>crete new user</React.Fragment>
+                        )}
+                </legend>
                 <div className="form-group">
                     <label htmlFor="username">username</label>
                     <input ref={this.nameInput} type="text" name="username" className="form-control" id="username"
@@ -42,7 +48,14 @@ class EditUser extends React.Component {
                         onChange={this.props.onChange}
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Save</button>
+                {this.props.id ? (
+                    <React.Fragment>
+                        <button type="submit" className="btn btn-primary">Save</button>
+                        <button type="button" onClick={this.props.delete} className="btn btn-danger">Delete</button>
+                    </React.Fragment>
+                ) : (
+                        <button type="submit" className="btn btn-primary">Create</button>
+                    )}
             </form>
 
         )
@@ -52,9 +65,10 @@ export default ApplyTheme(Logger(EditUser,'edit user'));
 
 
 EditUser.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
     username: PropTypes.string,
     email: PropTypes.string,
     onChange: PropTypes.func,
     save: PropTypes.func,
+    delete: PropTypes.func,
 }

@@ -45,6 +45,148 @@ const UsersApi = {
 }
 ```
 
+## delete user
+
+- go to `EditUser` component.
+- change the `PropTypes` `id` to **not** be required and add new property `delete` of type `PropTypes.func`
+
+```diff
+/* src/users/components/EditUser.js */
+...
+class EditUser extends React.Component {
+    ...
+}
+
+export default ApplyTheme(Logger(EditUser,'edit user'));
+
+
+EditUser.propTypes = {
+-   id: PropTypes.number.isRequired
++   id: PropTypes.number,
+    username: PropTypes.string,
+    email: PropTypes.string,
+    onChange: PropTypes.func,
+    save: PropTypes.func,
++   delete: PropTypes.func,
+}
+```
+
+```jsx
+/* src/users/components/EditUser.js */
+...
+class EditUser extends React.Component {
+    ...
+}
+
+export default ApplyTheme(Logger(EditUser,'edit user'));
+
+
+EditUser.propTypes = {
+    id: PropTypes.number,
+    username: PropTypes.string,
+    email: PropTypes.string,
+    onChange: PropTypes.func,
+    save: PropTypes.func,
+    delete: PropTypes.func,
+}
+```
+
+- on the `<legend>` element check if there is `this.props.id`. if so display the old text, if not then display new text `create new user`.
+
+```diff
+/* src/users/components/EditUser.js */
+...
+class EditUser extends React.Component {
+        render() {
+        return (
+            <form onSubmit={this.onSubmit} className="item">
+-                <legend>Edit User id:{this.props.id}</legend>
++                <legend>
++                    {this.props.id ? (
++                        <React.Fragment>Edit User id:{this.props.id}</React.Fragment>
++                    ) : (
++                            <React.Fragment>crete new user</React.Fragment>
++                        )}
++                </legend>
+                ...
+            </form>
+            )
+        }
+}
+
+```
+
+```jsx
+/* src/users/components/EditUser.js */
+...
+class EditUser extends React.Component {
+        render() {
+        return (
+            <form onSubmit={this.onSubmit} className="item">
+                <legend>
+                    {this.props.id ? (
+                        <React.Fragment>Edit User id:{this.props.id}</React.Fragment>
+                    ) : (
+                            <React.Fragment>crete new user</React.Fragment>
+                        )}
+                </legend>
+                ...
+            </form>
+            )
+        }
+}
+
+```
+
+- on the bottom of the `<form>` do the some check like in te previous bullet but here, if there is `this.props.user.id` add to the `Save` button `Delete` button that call `onClick` to `this.props.delete`
+- display `Create` button if there isn't `this.props.id`.
+
+```diff
+/* src/users/components/EditUser.js */
+...
+class EditUser extends React.Component {
+        render() {
+        return (
+            <form onSubmit={this.onSubmit} className="item">
+                ...
++                {this.props.id ? (
++                    <React.Fragment>
+                        <button type="submit" className="btn btn-primary">Save</button>
++                        <button type="button" onClick={this.props.delete} className="btn btn-danger">Delete</button>
++                    </React.Fragment>
++                ) : (
++                        <button type="submit" className="btn btn-primary">Create</button>
++                    )}
+            </form>
+            )
+        }
+}
+
+```
+
+```jsx
+/* src/users/components/EditUser.js */
+...
+class EditUser extends React.Component {
+        render() {
+        return (
+            <form onSubmit={this.onSubmit} className="item">
+                ...
+                {this.props.id ? (
+                    <React.Fragment>
+                        <button type="submit" className="btn btn-primary">Save</button>
+                        <button type="button" onClick={this.props.delete} className="btn btn-danger">Delete</button>
+                    </React.Fragment>
+                ) : (
+                        <button type="submit" className="btn btn-primary">Create</button>
+                    )}
+            </form>
+            )
+        }
+}
+
+```
+
 ## create UserDetail page
 
 - create new file `UserDetail.js` in `src/pages`
@@ -171,6 +313,69 @@ class UserDetails extends Component {
 class UserDetails extends Component {
 ...
 }
+export default withRouter(UserDetails);
+```
+
+- the complete `UserDetail` component
+
+```jsx
+/* src/pages/UserDetails.js */
+import React, { Component } from 'react'
+import EditUser from '../users/components/EditUser';
+import UsersApi from '../api/users';
+import { withRouter } from 'react-router-dom';
+
+class UserDetails extends Component {
+    constructor() {
+        super()
+        this.state = {
+            userRequested: false
+        }
+    }
+
+    async componentDidMount() {
+        this.setState({
+            user: await UsersApi.getUserById(this.props.match.params.id)
+        })
+    }
+    updateUser = async () => {
+        await UsersApi.updateUser(this.state.user);
+        this.props.history.push('/')
+
+    }
+    deleteUser = async () => {
+        await UsersApi.deleteUser(this.state.user.id);
+        this.props.history.push('/')
+    }
+    userChange = (e) => {
+        let user = {
+            [e.target.name]: e.target.value
+        }
+        this.setState((oldState) => {
+            return {
+                user: {
+                    ...oldState.user,
+                    ...user,
+                }
+            }
+        })
+    }
+    render() {
+        if (this.state.user) {
+            return (
+                <EditUser {...this.state.user}
+                    save={this.updateUser}
+                    delete={this.deleteUser}
+                    onChange={this.userChange} />)
+        } else if (this.state.userRequested) {
+            return <h2> User id: {this.props.match.params.id} not found</h2>
+        }
+        else {
+            return <h2> getting user data</h2>
+        }
+    }
+}
+
 export default withRouter(UserDetails);
 ```
 
