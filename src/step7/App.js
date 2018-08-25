@@ -5,6 +5,7 @@ import { BrowserRouter, Route, NavLink, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ThemeToggleChange from './features/components/ThemeToggleChange';
 import ThemeContext, { themes } from './contexts/theme.context';
+import SendMail from './pages/SendMail';
 export default class App extends Component {
     constructor() {
         super();
@@ -43,6 +44,12 @@ export default class App extends Component {
                                 <li className="nav-item">
                                     <span className="nav-link"><NavLink to="/user/create" exact >Create</NavLink></span>
                                 </li>
+                                <li className="nav-item">
+                                    <span className="nav-link"><NavLink to="/send-email/control" >Send Email control</NavLink></span>
+                                </li>
+                                <li className="nav-item">
+                                    <span className="nav-link"><NavLink to="/send-email/uncontrol" >Send Email un control</NavLink></span>
+                                </li>
                             </ul>
                             <ul className="navbar-nav">
                                 <ThemeToggleChange />
@@ -51,6 +58,7 @@ export default class App extends Component {
                         <Switch>
                             <Route exact path="/" component={Home} />
                             <Route exact path="/user/create" component={UserDetails} />
+                            <Route path="/send-email/:type(control|uncontrol)" component={SendMail} />
                             <Route path="/user/:id" component={UserDetails} />
                             <Route render={() => <h2> Page not found!</h2>} />
                         </Switch>
