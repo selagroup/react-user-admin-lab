@@ -185,3 +185,243 @@ export default class ControlForm extends Component {
     }
 }
 ```
+
+```jsx
+/* src/email/ControlForm.js */
+import React, { Component } from 'react'
+import PropTypes from 'prop-types';
+
+export default class ControlForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedUser: props.users[0] || {}
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        const selectedUser = nextProps.users[0] || {};
+        this.setState({
+            selectedUser
+        })
+    }
+    handleUserChange = (event) => {
+        const selectedUser = this.props.users.find((u) => u.id === parseInt(event.target.value, 10));
+        this.setState({
+            selectedUser
+        })
+    }
+    handleContentChange = (event) => {
+        this.setState({
+            content: event.target.value
+        })
+    }
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.props.onSendEmail({
+            email: this.state.selectedUser.email,
+            from: `ControlForm`,
+            content: this.state.content,
+        })
+    }
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="email_user">User</label>
+                    <select className="form-control" id="email_user"
+                        value={this.state.selectedUser.id}
+                        onChange={this.handleUserChange}>
+                        {this.props.users.map((u, i) => (
+                            <option key={i} value={u.id}>{u.username}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>Email: {this.state.selectedUser.email}</label>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email_content">Content</label>
+                    <textarea name='content' className="form-control" id="email_content" rows="3"
+                        value={this.state.content}
+                        onChange={this.handleContentChange} />
+                </div>
+                <button type="submit" className="btn btn-success">send</button>
+            </form>
+        )
+    }
+}
+
+ControlForm.propTypes = {
+    onSendEmail: PropTypes.func.isRequired,
+    users: PropTypes.array.isRequired,
+}
+```
+
+## un-control form
+
+- copy paste the `src/email/ControlForm.js` to `src/email/UnControlForm.js`.
+- change the name of the class to `UnControlForm`.
+
+```diff
+/* src/email/UnControlForm.js */
+-export default class ControlForm extends Component {
++export default class UnControlForm extends Component {
+    constructor(props) {
+        super(props);
++        this.userIdRef = React.createRef();
++        this.contentRef = React.createRef();
+        this.state = {
+            selectedUser: props.users[0] || {}
+        }
+    }
+}
+-ControlForm.propTypes = {
++UnControlForm.propTypes = {
+    onSendEmail: PropTypes.func.isRequired,
+    users: PropTypes.array.isRequired,
+}
+```
+
+- in the constructor create `this.userIdRef` and `this.contentRed` and assign them both to `React.createRef()`.
+
+```diff
+/* src/email/UnControlForm.js */
+export default class UnControlForm extends Component {
+    constructor(props) {
+        super(props);
++        this.userIdRef = React.createRef();
++        this.contentRef = React.createRef();
+        this.state = {
+            selectedUser: props.users[0] || {}
+        }
+    }
+}
+```
+
+- remove `handleContentChange` function.
+- on the `handleSubmit` change `this.state.content` to `this.contentRef.current.value`
+
+```diff
+/* src/email/UnControlForm.js */
+export default class UnControlForm extends Component {
+    ...
+-    handleContentChange = (event) => {
+-        this.setState({
+-            content: event.target.value
+-        })
+-    }
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.props.onSendEmail({
+            email: this.state.selectedUser.email,
+-            from: `ControlForm`,
+-            content: this.state.content,
++            from: `UnControlForm`,
++            content: this.contentRef.current.value,
+        })
+    }
+}
+```
+
+- on the render function in the `<select>` element remove `value={this.state.selectedUser.id}` to `ref={this.userIdRef}` and on the `<textarea>` element remove `value` and `change` and add `ref={this.contentRef}`
+
+```diff
+/* src/email/UnControlForm.js */
+export default class UnControlForm extends Component {
+    ...
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="email_user">User</label>
+                    <select className="form-control" id="email_user"
+-                        value={this.state.selectedUser.id}
++                       ref={this.userIdRef}
+                        onChange={this.handleUserChange} >
+                        {this.props.users.map((u, i) => (
+                            <option key={i} value={u.id}>{u.username}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>Email: {this.state.selectedUser.email}</label>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email_content">Content</label>
+                    <textarea name='content' className="form-control" id="email_content" rows="3"
+-                        value={this.state.content}
+-                        onChange={this.handleContentChange} />
++                        ref={this.contentRef} />
+                </div>
+                <button type="submit" className="btn btn-success">send</button>
+            </form>
+        )
+    }
+}
+```
+
+```jsx
+/* src/email/UnControlForm.js */
+import React, { Component } from 'react'
+import PropTypes from 'prop-types';
+
+export default class UnControlForm extends Component {
+    constructor(props) {
+        super(props);
+        this.userIdRef = React.createRef();
+        this.contentRef = React.createRef();
+        this.state = {
+            selectedUser: props.users[0] || {}
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        const selectedUser = nextProps.users[0] || {};
+        this.setState({
+            selectedUser
+        })
+    }
+    handleUserChange = (event) => {
+        const selectedUser = this.props.users.find((u) => u.id === parseInt(event.target.value, 10));
+        this.setState({
+            selectedUser
+        })
+    }
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.props.onSendEmail({
+            email: this.state.selectedUser.email,
+            from: `UnControlForm`,
+            content: this.contentRef.current.value,
+        })
+    }
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="email_user">User</label>
+                    <select className="form-control" id="email_user" onChange={this.handleUserChange}
+                         ref={this.userIdRef}>
+                        {this.props.users.map((u, i) => (
+                            <option key={i} value={u.id}>{u.username}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>Email: {this.state.selectedUser.email}</label>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email_content">Content</label>
+                    <textarea name='content' className="form-control" id="email_content" rows="3" 
+                        ref={this.contentRef} />
+                </div>
+                <button type="submit" className="btn btn-success">send</button>
+            </form>
+        )
+    }
+}
+
+UnControlForm.propTypes = {
+    onSendEmail: PropTypes.func.isRequired,
+    users: PropTypes.array.isRequired,
+}
+```
