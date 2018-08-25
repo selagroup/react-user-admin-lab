@@ -425,3 +425,62 @@ UnControlForm.propTypes = {
     users: PropTypes.array.isRequired,
 }
 ```
+
+## add send mail routing
+
+- create new class component `src/pages/SendMail.js` with  `ControlForm`, `UnControlForm`, `UserApi` and `{ withRouter }` imports.
+- on the constructor create `this.state` object with `users` as array and `selectedUser` as empty object.
+- add `componentDidMount` live-cycle method, to the class, as `async` function.
+- create `SendMail` function that get `events`, `console.log` the event and call to `this.props.history.push('/')`.
+- on the `render` function check, if `this.props.match.type === 'control'` then display the `<ControlForm>` element, else the `<UnControlForm>` element.
+- `export default` the `SendMail` class wrap with `withRoute`
+
+```jsx
+/* src/pages/SendMail.js */
+import React, { Component } from 'react'
+import ControlForm from '../email/ControlForm';
+import UnControlForm from '../email/UnControlForm';
+import UserApi from '../api/users';
+import { withRouter } from 'react-router-dom';
+
+class SendMail extends Component {
+    constructor() {
+        super();
+        this.state = {
+            users: [],
+            selectedUser: {
+            }
+        }
+    }
+    async componentDidMount() {
+        const users = await UserApi.getUsers();
+        this.setState({
+            users,
+            selectedUser: users[0]
+        })
+    }
+    send = (event) => {
+        console.log('sending mail => ', event);
+        this.props.history.push('/');
+    }
+    render() {
+        if (this.props.match.params.type === 'control') {
+            return (
+                <React.Fragment>
+                    <h2>Control Form</h2>
+                    <ControlForm onSendEmail={this.send} users={this.state.users} />
+                </React.Fragment>
+            )
+        } else {
+            return (
+                <React.Fragment>
+                    <h2>Un-Control Form</h2>
+                    <UnControlForm onSendEmail={this.send} users={this.state.users} />
+                </React.Fragment>
+            )
+        }
+    }
+}
+
+export default withRouter(SendMail);
+```
