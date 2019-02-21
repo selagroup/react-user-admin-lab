@@ -20,7 +20,7 @@ const users = [
         email: 'janesmith@gmail.com',
     }
 ]
-const USER_API = 'http://local.directv.com:3001/users'
+const USER_API = 'http://localhost:3001/users'
 const UsersApi = {
     getUserByIdSync(id) {
         return users.find((u) => id === u.id);
