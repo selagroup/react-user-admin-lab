@@ -13,7 +13,8 @@ export default function App() {
                 .then(res => setUsers(res))
                 .catch(() => console.log('ERROR GETTING USERS!!!!!'));
             return ()=>{};    
-        }
+        },
+        []
     );
 
     const selectUser = (id) => {
