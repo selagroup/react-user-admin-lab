@@ -1,0 +1,8 @@
+.item{
+    width: auto;
+    border-radius: 10px;
+    border: solid 1px lightgray;
+    padding: 10px;
+    background: whitesmoke;
+    color:black;
+ }
